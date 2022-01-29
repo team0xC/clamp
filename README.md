@@ -21,13 +21,13 @@ CLAMP consist of the following elements:
 
 0. Create a virtual Python environment
 
-	$ python3 -m venv ENV
+		$ python3 -m venv ENV
 
 1. Activate the virtual environment
 
-	$ source ENV/bin/activate
+		$ source ENV/bin/activate
 
 2. Install the dependencies
 
-	(ENV)$ pip install -r requirements.txt
+		(ENV)$ pip install -r requirements.txt
 
