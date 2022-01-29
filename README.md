@@ -16,3 +16,18 @@ CLAMP consist of the following elements:
 6. Patcher of vulnerabilities
 	- [docs/patcher_checklist.md](docs/patcher_checklist.md)
 
+
+## Developer Setup
+
+0. Create a virtual Python environment
+
+	$ python3 -m venv ENV
+
+1. Activate the virtual environment
+
+	$ source ENV/bin/activate
+
+2. Install the dependencies
+
+	(ENV)$ pip install -r requirements.txt
+
