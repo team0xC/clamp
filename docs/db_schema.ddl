@@ -1,3 +1,7 @@
+-- This is no longer needed
+-- Replaced by models.py
+
+
 CREATE TABLE service (
 	id			INTEGER PRIMARY KEY,
 	name		TEXT NOT NULL,

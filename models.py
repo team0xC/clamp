@@ -1,16 +1,21 @@
-from sqlalchemy import Table, ForeignKey, BLOB, Column, Integer, String, Boolean
-from sqlalchemy.orm import declarative_base, backref, relationship
+from sqlalchemy import Column, ForeignKey
+from sqlalchemy.types import Integer, String, Boolean, BLOB
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, relationship
+
+import settings
 
 
 Base = declarative_base()
 
 
-service_exploit = Table(
-    "service_explot",
-    Base.medatata,
-    Column("service_id", Integer, ForeignKey("services.id")),
-    Column("exploit_id", Integer, ForeignKey("exploits.id"))
-)
+def db_connect(test=False):
+    instance = 'test' if test==True else 'prod'
+    return create_engine(f"sqlite:///{settings.DATABASE[instance]}", echo=True)
+
+
+def create_tables(engine):
+    Base.metadata.create_all(engine)
 
 
 class Service(Base):
@@ -20,29 +25,44 @@ class Service(Base):
     name = Column(String, nullable=False)
     port = Column(Integer, nullable=False)
 
+    vulns = relationship("Vuln", back_populates="service")
+    exploits = relationship("Exploit", back_populates="service")
+
     def __repr__(self):
-        return f"<Service (name='{self.name}', port='{self.port}'>"
+        return f"<Service (name='{self.name}', port='{self.port}')>"
 
 
 class Vuln(Base):
     __tablename__ = "vulns"
 
     id = Column(Integer, primary_key=True)
-    service = relationship("Service", backref=backref("vuln"))
-    benign = Column(Boolean, server_default=False)
-    patched = Column(Boolean, server_default=False)
+    benign = Column(Boolean, default=False)
+    patched = Column(Boolean, default=False)
     sequence = Column(BLOB, nullable=False)
+    service_id = Column(Integer, ForeignKey("services.id"), nullable=False)
+
+    service = relationship("Service", back_populates="vulns")
+    exploits = relationship("Exploit", back_populates="vuln")
 
     def __repr__(self):
-        return f"<Vuln (id='{self.id}', service='{self.service}', patched='{self.patched}', benign='{self.benign}'>"
+        return f"<Vuln (id='{self.id}', service='{self.service.name}')>"
 
 
 class Exploit(Base):
     __tablename__ = "exploits"
 
     id = Column(Integer, primary_key=True)
-    service = relationship("Vuln", backref=backref("exploit"))
-    service = relationship("Service", secondary=service_exploit, backref=backref("exploits"))
     path = Column(String, nullable=False)
-    flag_ct_rd = Column(Integer, server_default=0)
-    flag_ct_cum = Column(Integer, server_default=0)
+    flag_ct_rd = Column(Integer, default=0)
+    flag_ct_cum = Column(Integer, default=0)
+    vuln_id = Column(Integer, ForeignKey("vulns.id"), nullable=True)
+    service_id = Column(Integer, ForeignKey("services.id"), nullable=False)
+
+    service = relationship("Service", back_populates="exploits")
+    vuln = relationship("Vuln", back_populates="exploits")
+
+    def name(self):
+        return self.path.split('/')[-1]
+
+    def __repr__(self):
+        return f"<Exploit (id='{self.id}', service='{self.service.name}', name='{self.name()}')>"
