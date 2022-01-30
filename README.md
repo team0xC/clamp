@@ -36,5 +36,5 @@ CLAMP consist of the following elements:
 
 Tests are run with Python's standard testing package `unittest`.
 
-		$ python -m unittest
+		(ENV)$ python -m unittest
 		
