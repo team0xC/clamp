@@ -4,7 +4,8 @@ CTF Logger Analyzer Mimicker Patcher
 CLAMP consist of the following elements:
 
 1. Database of vulnerabilities and exploits
-	- [pctf.db](pctf.db)
+	- [pctf.db](data/pctf.db)
+	- [models.py](models.py)
 2. Executor: the orchestrator of attacks
 	- [executor.py](executor.py)
 3. Logger of traffic
