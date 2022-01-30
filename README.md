@@ -32,3 +32,9 @@ CLAMP consist of the following elements:
 
 		(ENV)$ pip install -r requirements.txt
 
+## Testing
+
+Tests are run with Python's standard testing package `unittest`.
+
+		$ python -m unittest
+		
