@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.types import Integer, String, Boolean, BLOB
+from sqlalchemy.types import Integer, String, Boolean
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 import settings
 
@@ -9,9 +9,19 @@ import settings
 Base = declarative_base()
 
 
-def db_connect(test=False):
+def get_db_engine(test=False):
     instance = 'test' if test==True else 'prod'
-    return create_engine(f"sqlite:///{settings.DATABASE[instance]}", echo=True)
+    return create_engine(f"sqlite:///{settings.DATABASE[instance]}")
+
+
+def get_db_session(engine):
+    Session = sessionmaker(bind=engine)
+    return Session()
+
+
+def close_db(session, engine):
+    session.close()
+    engine.dispose()
 
 
 def create_tables(engine):
@@ -38,7 +48,7 @@ class Vuln(Base):
     id = Column(Integer, primary_key=True)
     benign = Column(Boolean, default=False)
     patched = Column(Boolean, default=False)
-    sequence = Column(BLOB, nullable=False)
+    sequence = Column(String, nullable=False)
     service_id = Column(Integer, ForeignKey("services.id"), nullable=False)
 
     service = relationship("Service", back_populates="vulns")
