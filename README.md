@@ -16,6 +16,7 @@ CLAMP consist of the following elements:
 	- TBD
 6. Patcher of vulnerabilities
 	- [docs/patcher_checklist.md](docs/patcher_checklist.md)
+	- https://docs.google.com/document/d/13cRbKB0WiuiLUDPpQ-4POr7_HJplsGUN54HbSIjyc6Y/edit?usp=sharing
 
 
 ## Developer Setup
