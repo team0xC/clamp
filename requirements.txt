@@ -1,1 +1,4 @@
 sqlalchemy
+swpag_client >= 0.3.7    # CTF 'Shall We Play A Game' client 
+python-dotenv >= 0.19.2  # Read environment variables from .env file
+python-hosts             # Get /etc/hosts into dictionary
