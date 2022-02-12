@@ -14,6 +14,11 @@ Once installed, the service (default name: clamp-capture) can be stopped/started
 
 Scripts can also be invoked using /etc/init.d/clamp-capture
 
+### If packet capture fails to stop
+Invoke as root:
+
+	./capture/capture.kill
+
 ## To Uninstall
 	./capture/capture.uninstall.asroot
 
