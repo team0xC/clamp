@@ -1,0 +1,30 @@
+#!/bin/bash
+# CSE 545 Spring A Team 12
+# CSE 545, Group Project, clamp application, capture module
+# https://github.com/team0xC/clamp
+
+source capture.cfg
+
+## install wireshark
+apt-get install wireshark
+
+## Setup user & assets
+useradd $DAEMON_USER
+usermod -a -G wireshark $DAEMON_USER
+mkdir $CAPTURE_LOGDIR
+chown $DAEMON_USER $CAPTURE_LOGDIR
+
+chown root $DIR/capture.*
+chmod 564 $DIR/capture.*
+chmod 575 $DIR/capture.run
+
+## Fix Dameon aboslute pathing
+sed -i "s@source capture.cfg@source $DIR/capture.cfg@g" capture.service
+sed -i "s@source capture.cfg@source $DIR/capture.cfg@g" capture.run
+sed -i "s@source capture.cfg@source $DIR/capture.cfg@g" capture.cron
+sed -i "s@source capture.cfg@source $DIR/capture.cfg@g" capture.kill
+
+## Install daemon
+ln -s $DIR/capture.service $DAEMON_SERVICE_DIR
+update-rc.d $DAEMON_NAME defaults
+#$DAEMON_SERVICE_DIR start

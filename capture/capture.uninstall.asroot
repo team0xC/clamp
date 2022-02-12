@@ -1,0 +1,15 @@
+#!/bin/bash
+# CSE 545 Spring A Team 12
+# CSE 545, Group Project, clamp application, capture module
+# https://github.com/team0xC/clamp
+
+source capture.cfg
+
+sed -i "s@source $DIR/capture.cfg@source capture.cfg@g" capture.service
+sed -i "s@source $DIR/capture.cfg@source capture.cfg@g" capture.run
+sed -i "s@source $DIR/capture.cfg@source capture.cfg@g" capture.cron
+sed -i "s@source $DIR/capture.cfg@source capture.cfg@g" capture.kill
+
+$DAEMON_SERVICE_DIR stop
+update-rc.d $DAEMON_NAME remove
+rm $DAEMON_SERVICE_DIR

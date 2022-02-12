@@ -1,0 +1,7 @@
+#!/bin/bash
+# CSE 545 Spring A Team 12
+# CSE 545, Group Project, clamp application, capture module
+# https://github.com/team0xC/clamp
+
+source capture.cfg
+

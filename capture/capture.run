@@ -1,0 +1,17 @@
+#!/bin/bash
+# CSE 545 Spring A Team 12
+# CSE 545, Group Project, clamp application, capture module
+# https://github.com/team0xC/clamp
+
+source capture.cfg
+
+#while true
+#do
+#  date >> $CAPTURE_LOGDIR/test
+#  sleep 1m
+#done
+
+cd $CAPTURE_LOGDIR
+$CAPTURE_APP -P -b duration:$CAPTURE_DURATION -w $CAPTURE_FILE_PREFIX
+
+
