@@ -13,3 +13,5 @@ sed -i "s@source $DIR/capture.cfg@source capture.cfg@g" capture.kill
 $DAEMON_SERVICE_DIR stop
 update-rc.d $DAEMON_NAME remove
 rm $DAEMON_SERVICE_DIR
+
+crontab -l | grep -v "$DIR/capture.cron" | crontab -

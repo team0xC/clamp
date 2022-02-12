@@ -28,3 +28,7 @@ sed -i "s@source capture.cfg@source $DIR/capture.cfg@g" capture.kill
 ln -s $DIR/capture.service $DAEMON_SERVICE_DIR
 update-rc.d $DAEMON_NAME defaults
 #$DAEMON_SERVICE_DIR start
+
+## Install crontab
+(crontab -l 2>/dev/null; echo "* * * * * $DIR/capture.cron") | crontab -
+

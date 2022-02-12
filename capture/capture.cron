@@ -5,3 +5,14 @@
 
 source capture.cfg
 
+## Fix dumpcap access issues
+
+chmod 644 $CAPTURE_LOGDIR/*$CAPTURE_FILE_EXT
+
+## Compress files
+
+find $CAPTURE_LOGDIR -mmin +$DISK_COMPRESSION_AGE -name "*$CAPTURE_FILE_EXT" -exec $DISK_COMPRESSION_APP $DISK_COMPRESSION_ARGS '{}'$DISK_COMPRESSION_EXT '{}' \;
+find $CAPTURE_LOGDIR -mmin +$DISK_COMPRESSION_AGE -name "*$CAPTURE_FILE_EXT" -exec rm -- '{}' \;
+
+chown $DAEMON_USER:$DAEMON_USER $CAPTURE_LOGDIR/*$DISK_COMPRESSION_EXT
+
