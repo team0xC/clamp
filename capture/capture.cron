@@ -52,5 +52,13 @@ then
 		ARCH_USAGE=$(df $DISK_ARCHIVE_LOCATION --output=pcent | sed 's/[^0-9]//g' | tr -d '\n')
 		COMPRESSED_FILES=$(ls $DISK_ARCHIVE_LOCATION/*$DISK_COMPRESSION_EXT 2>/dev/null | wc -l)
 	done
+
+	# Delete archived folder older than retention
+	find $DISK_ARCHIVE_LOCATION -mmin +$DISK_ARCHIVE_RETENTION_TIME -name "*$DISK_COMPRESSION_EXT" -exec rm -- '{}' \;
+
+	# Archive files older than archivee time automatically
+	find $CAPTURE_LOGDIR -mmin +$DISK_ARCHIVE_TIME -name "*$DISK_COMPRESSION_EXT" -exec mv '{}' $DISK_ARCHIVE_LOCATION \;
+else
+	find $CAPTURE_LOGDIR -mmin +$DISK_ARCHIVE_TIME -name "*$DISK_COMPRESSION_EXT" -exec rm -- '{}' \;
 fi
 
