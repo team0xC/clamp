@@ -14,5 +14,43 @@ chmod 644 $CAPTURE_LOGDIR/*$CAPTURE_FILE_EXT
 find $CAPTURE_LOGDIR -mmin +$DISK_COMPRESSION_AGE -name "*$CAPTURE_FILE_EXT" -exec $DISK_COMPRESSION_APP $DISK_COMPRESSION_ARGS '{}'$DISK_COMPRESSION_EXT '{}' \;
 find $CAPTURE_LOGDIR -mmin +$DISK_COMPRESSION_AGE -name "*$CAPTURE_FILE_EXT" -exec rm -- '{}' \;
 
+## Fix compression ownership
+
 chown $DAEMON_USER:$DAEMON_USER $CAPTURE_LOGDIR/*$DISK_COMPRESSION_EXT
+
+## Archive/Delete oldest files while over threshold and there are files to move/delete
+
+DISK_USAGE=$(df $CAPTURE_LOGDIR --output=pcent | sed 's/[^0-9]//g' | tr -d '\n')
+COMPRESSED_FILES=$(ls $CAPTURE_LOGDIR/*$DISK_COMPRESSION_EXT 2>/dev/null | wc -l)
+
+while [ $DISK_ARCHIVE_PERCENT -lt $DISK_USAGE ] && [ $COMPRESSED_FILES -gt 0 ]
+do
+	if [ -d "$DISK_ARCHIVE_LOCATION" ]
+	then
+		# Move the oldest file 
+		mv $(ls -1t $CAPTURE_LOGDIR/*$DISK_COMPRESSION_EXT | tail -1) $DISK_ARCHIVE_LOCATION
+	else
+		# Delete instead
+		rm -f $(ls -1t $CAPTURE_LOGDIR/*$DISK_COMPRESSION_EXT | tail -1)
+	fi
+
+	DISK_USAGE=$(df $CAPTURE_LOGDIR --output=pcent | sed 's/[^0-9]//g' | tr -d '\n')
+	COMPRESSED_FILES=$(ls $CAPTURE_LOGDIR/*$DISK_COMPRESSION_EXT 2>/dev/null | wc -l)
+done
+
+## Delete oldest files from archive while over threshold and there are files to delete
+
+if [ -d "$DISK_ARCHIVE_LOCATION" ]
+then
+	ARCH_USAGE=$(df $DISK_ARCHIVE_LOCATION --output=pcent | sed 's/[^0-9]//g' | tr -d '\n')
+	COMPRESSED_FILES=$(ls $DISK_ARCHIVE_LOCATION/*$DISK_COMPRESSION_EXT 2>/dev/null | wc -l)
+
+	while [ $DISK_ARCHIVE_RETENTION_PERCENT -lt $ARCH_USAGE ] && [ $COMPRESSED_FILES -gt 0 ]
+	do
+		rm -f $(ls -1t $DISK_ARCHIVE_LOCATION/*$DISK_COMPRESSION_EXT | tail -1)
+
+		ARCH_USAGE=$(df $DISK_ARCHIVE_LOCATION --output=pcent | sed 's/[^0-9]//g' | tr -d '\n')
+		COMPRESSED_FILES=$(ls $DISK_ARCHIVE_LOCATION/*$DISK_COMPRESSION_EXT 2>/dev/null | wc -l)
+	done
+fi
 
