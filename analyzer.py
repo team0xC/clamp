@@ -1,4 +1,9 @@
-#Analyzer: Lookup Flags, Find Sessions, and Vulns  
+# CSE545 - Team 12 (team0xC) 
+# Analyzer module to Lookup Flags, Find Sessions, and Vulns in captured PCAP file.
+# References: 
+# [1] Rehim Rejah, Effective Python Penetration Testing, 1st edition, Packt Publishing, 2016
+# [2] Mohit, Python Penetration Testing Essentials, 1st edition, Packt Publishing, 2015
+    
 
 import swpag_client
 import sys
