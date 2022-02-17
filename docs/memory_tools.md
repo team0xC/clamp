@@ -1,5 +1,5 @@
 # Memory Investigation/Threat Hunting
-__The  Volatility  Framework  is a completely open collection of tools for the extraction of digital artifacts from volatile memory (RAM) samples. It is useful in forensics  analysis. The  extraction  techniques  are  performed  completely  independent  of  the system being investigated but offer unprecedented visibility into the runtime state of the system. __
+__The  Volatility  Framework  is a completely open collection of tools for the extraction of digital artifacts from volatile memory (RAM) samples. It is useful in forensics  analysis. The  extraction  techniques  are  performed  completely  independent  of  the system being investigated but offer unprecedented visibility into the runtime state of the system.__
 
 __Getting Help__
 
