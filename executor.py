@@ -71,7 +71,8 @@ def sort_exploits(exploit_success):
 
 def get_exploit(exploit_name):
     module = importlib.import_module(scripts_dir + exploit_name)
-    exploit_class = getattr(module, exploit_name)
+    class_name = module.class_name
+    exploit_class = getattr(module, class_name)
     return exploit_class(game_client)
 
 def count_correct(lst):
