@@ -62,3 +62,14 @@ else
 	find $CAPTURE_LOGDIR -mmin +$DISK_ARCHIVE_TIME -name "*$DISK_COMPRESSION_EXT" -exec rm -- '{}' \;
 fi
 
+## Look for updates to configuration and recycle service if necessary
+
+CURRENT_TIME=$(date +%s)
+CFG_MOD_TIME=$(stat $DIR/capture.cfg -c %Y)
+MOD_DIFF=$(expr $CURRENT_TIME - $CFG_MOD_TIME)
+
+if systemctl is-active --quiet $DAEMON_NAME && [ $MOD_DIFF -lt 60 ]
+then
+	systemctl reload $DAEMON_NAME
+fi
+

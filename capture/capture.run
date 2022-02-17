@@ -5,13 +5,26 @@
 
 source capture.cfg
 
-#while true
-#do
-#  date >> $CAPTURE_LOGDIR/test
-#  sleep 1m
-#done
+## Construct filter string from capture.cfg variables
+
+IP_STRING=$(echo $FILTERED_IP | sed 's/\( \)/ or /g' | sed 's/\([0-9]*[.][0-9]*[.][0-9]*[.][0-9]*\)/host \1/g')
+UDP_STRING=$(echo $FILTERED_UDP_PORTS | sed 's/\( \)/ or /g' | sed 's/\([0-9][0-9]*\)/udp port \1/g')
+TCP_STRING=$(echo $FILTERED_TCP_PORTS | sed 's/\( \)/ or /g' | sed 's/\([0-9][0-9]*\)/tcp port \1/g')
+OTHER_STRING="$OTHER_FILTERS"
+
+if [ -n "$IP_STRING" ];  then  IP_STRING="(not ($IP_STRING))"  ; fi
+if [ -n "$UDP_STRING" ]; then  UDP_STRING="(not ($UDP_STRING))"  ; fi
+if [ -n "$TCP_STRING" ]; then  TCP_STRING="(not ($TCP_STRING))"  ; fi
+if [ -n "$OTHER_STRING" ]; then  OTHER_STRING="($OTHER_STRING)"  ; fi
+
+FILTER_STRING=""
+if [ -n "$IP_STRING" ];    then FILTER_STRING="$IP_STRING" ; fi
+if [ -n "$UDP_STRING" ];   then if [ -n "$FILTER_STRING" ] ; then FILTER_STRING="$FILTER_STRING and $UDP_STRING" ; else FILTER_STRING="$UDP_STRING" ; fi fi
+if [ -n "$TCP_STRING" ];   then if [ -n "$FILTER_STRING" ] ; then FILTER_STRING="$FILTER_STRING and $TCP_STRING" ; else FILTER_STRING="$TCP_STRING" ; fi fi
+if [ -n "$OTHER_STRING" ]; then if [ -n "$FILTER_STRING" ] ; then FILTER_STRING="$FILTER_STRING and $OTHER_STRING" ; else FILTER_STRING="$OTHER_STRING" ; fi fi
+
+## Execute capture
 
 cd $CAPTURE_LOGDIR
-$CAPTURE_APP -P -b duration:$CAPTURE_DURATION -w $CAPTURE_FILE_PREFIX
-
+$CAPTURE_APP -P -b duration:$CAPTURE_DURATION -w $CAPTURE_FILE_PREFIX -f "$FILTER_STRING"
 

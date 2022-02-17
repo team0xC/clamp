@@ -15,8 +15,8 @@ mkdir $CAPTURE_LOGDIR
 chown $DAEMON_USER $CAPTURE_LOGDIR
 
 chown root $DIR/capture.*
-chmod 564 $DIR/capture.*
-chmod 575 $DIR/capture.run
+chmod 544 $DIR/capture.*
+chmod 555 $DIR/capture.run $DIR/capture.cfg
 
 ## Fix Dameon aboslute pathing
 sed -i "s@source capture.cfg@source $DIR/capture.cfg@g" capture.service
@@ -27,7 +27,7 @@ sed -i "s@source capture.cfg@source $DIR/capture.cfg@g" capture.kill
 ## Install daemon
 ln -s $DIR/capture.service $DAEMON_SERVICE_DIR
 update-rc.d $DAEMON_NAME defaults
-#$DAEMON_SERVICE_DIR start
+systemctl start $DAEMON_NAME
 
 ## Install crontab
 (crontab -l 2>/dev/null; echo "* * * * * $DIR/capture.cron") | crontab -
