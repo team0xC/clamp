@@ -19,7 +19,7 @@
 
 __Persistence areas__
 
-**/etc/rc.local, /etc/initd, /etc/rc*.d, /etc/modules, /etc/cron*, /var/spool/cron/*    **
+__/etc/rc.local, /etc/initd, /etc/rc*.d, /etc/modules, /etc/cron*, /var/spool/cron/*__   
 
 >__rpm -Va | grep ^..5.__     (Package command to find changed files)
 
