@@ -3,6 +3,7 @@ import os
 from common import game_client, team
 import importlib
 import math
+import models
 
 # NOTES: database and swpag not implemented, must also establish a standard for exploit modules
 
@@ -10,16 +11,25 @@ scripts_dir = "exploit_scripts"
 exploit_modules = {}
 exploit_success = {}
 current_tick = -1
+cwd = os.getcwd()
+scripts_fullpath = cwd + '/' + scripts_dir + '/'
 
 def run_all_exploits():
     #get exploits
     exploit_list = get_exploits_list()
+    rebuild_path = lambda name: scripts_fullpath + name + '.py'
     for exploit_name in exploit_list:
+        # Track module objects of exploits that have already been loaded
+        exploit_modules[exploit_name] = load_exploit(exploit_name)
+
+        # initialize successes of new exploits
         if exploit_name not in exploit_success:
             exploit_success[exploit_name] = 0
-    
-    #TODO: add new modules to database
 
+        # Warning: slow
+        add_exploit_to_db(exploit_name)
+
+      
     # e.g. {<service_id>: [<team_id>, ...], ...}
     target_services = services_up()
 
@@ -51,6 +61,9 @@ def run_all_exploits():
             exploit_success[exploit_name] += count_correct(results)
 
     #TODO: sort database based on flag captures
+    # Q: Premature optimization? 
+    #    There will be at most 10-20 exploits. Sorting is o(nlogn).
+    #    Querying the database is ???
 
 # Get list of exploits from scripts directory, 
 # then remove file extensions to make importing easier
@@ -86,8 +99,8 @@ def sort_exploits(exploit_success):
     exploit_list.sort(key=lambda x: x[1], reverse=True)
     return exploit_list
 
-# Dynamically load exploit and instantiate class
-def get_exploit(exploit_name):
+# Dynamically load exploit and save object
+def load_exploit(exploit_name):
     module_path = scripts_dir + '.' + exploit_name
 
     # Check if exploit has previously been imported, dynamically reload if so
@@ -95,14 +108,33 @@ def get_exploit(exploit_name):
         module = importlib.import_module(module_path)
     else:
         module = importlib.reload(exploit_modules[exploit_name])
+    return module
 
-    # Track module objects of exploits that have already been loaded
-    exploit_modules[exploit_name] = module
+def get_exploit(exploit_name):
+    module = exploit_modules[exploit_name]
     class_name = module.class_name
     exploit_class = getattr(module, class_name)
     return exploit_class(game_client)
 
-# Count number of correctt values returned after submitting flags
+# add new modules to database
+def add_exploit_to_db(exploit_name):
+    engine = models.get_db_engine()
+    Session = models.get_db_session(engine)
+    Exploit = models.Exploit
+    exploit_fullpath = rebuild_path(exploit_name)
+    with Session() as session:
+        with session.begin():
+        if not session.query(Exploit.query.filter(
+            Exploit.path == exploit_fullpath).exists()
+            ).scalar():
+
+            exploit_obj = get_exploit(exploit_name)
+            new_exploit = Exploit(
+                path = exploit_fullpath,
+                service_id = exploit_obj.service.id)
+            session.add(new_exploit)
+
+# Count number of correct values returned after submitting flags
 def count_correct(lst):
     count = 0
     for value in lst:
