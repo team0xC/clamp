@@ -18,7 +18,8 @@
 >__find / -mtime -1__        (Find files modified/created within last day)
 
 __Persistence areas__
-/etc/rc.local, /etc/initd, /etc/rc*.d, /etc/modules, /etc/cron*, /var/spool/cron/*    
+
+**/etc/rc.local, /etc/initd, /etc/rc*.d, /etc/modules, /etc/cron*, /var/spool/cron/*    **
 
 >__rpm -Va | grep ^..5.__     (Package command to find changed files)
 
@@ -41,7 +42,7 @@ Proc file system (procfs) is virtual file system created on fly when system boot
 
 >ls -al /proc/<PID>/exe      __(Real process path)__
 
-strings /proc/<PID>/environ    __(Process environment)__
+> strings /proc/<PID>/environ    __(Process environment)__
 
 >ls -alR /proc/*/cwd      __(Process working directory)__
 
@@ -61,7 +62,7 @@ strings /proc/<PID>/environ    __(Process environment)__
 
 >cat /etc/sudoers and /etc/group      __(check sudoers file)__
 
-crontab -l        __(Check scheduled tasks)__
+> crontab -l        __(Check scheduled tasks)__
 
 >atq             __(Check scheduled tasks)__
 
