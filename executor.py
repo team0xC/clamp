@@ -6,12 +6,14 @@ import math
 
 # NOTES: database and swpag not implemented, must also establish a standard for exploit modules
 
-scripts_dir = "./exploit_scripts/"
+scripts_dir = "exploit_scripts"
+exploit_modules = {}
 exploit_success = {}
+current_tick = -1
 
-def tick():
+def run_all_exploits():
     #get exploits
-    exploit_list = next(os.walk(scripts_dir))[2] # Gets only files as opposed to os.listdir
+    exploit_list = get_exploits_list()
     for exploit_name in exploit_list:
         if exploit_name not in exploit_success:
             exploit_success[exploit_name] = 0
@@ -50,6 +52,20 @@ def tick():
 
     #TODO: sort database based on flag captures
 
+# Get list of exploits from scripts directory, 
+# then remove file extensions to make importing easier
+def get_exploits_list():
+    directory = './' + scripts_dir + '/'
+    exploits_list = next(os.walk(directory))[2] # Gets only files as opposed to os.listdir
+    for i in range(len(exploits_list)):
+        exploit = exploits_list[i]
+        if exploit[-3:] == '.py':
+            exploits_list[i] = exploits[:-3]
+    return exploits_list
+
+
+# Create dictionary of {<service_id>: [<team_id>, ...]...}
+# of all the services that are still up
 def services_up():
     service_list = {}
     team_services = team.get_game_status()['service_states']
@@ -64,17 +80,29 @@ def services_up():
                     service_list[service_id] = [team_id]
     return service_list
 
+# Sort exploits by number of successes achieved
 def sort_exploits(exploit_success):
     exploit_list = list(exploit_success.items())
     exploit_list.sort(key=lambda x: x[1], reverse=True)
     return exploit_list
 
+# Dynamically load exploit and instantiate class
 def get_exploit(exploit_name):
-    module = importlib.import_module(scripts_dir + exploit_name)
+    module_path = scripts_dir + '.' + exploit_name
+
+    # Check if exploit has previously been imported, dynamically reload if so
+    if exploit_name not in exploit_modules:
+        module = importlib.import_module(module_path)
+    else:
+        module = importlib.reload(exploit_modules[exploit_name])
+
+    # Track module objects of exploits that have already been loaded
+    exploit_modules[exploit_name] = module
     class_name = module.class_name
     exploit_class = getattr(module, class_name)
     return exploit_class(game_client)
 
+# Count number of correctt values returned after submitting flags
 def count_correct(lst):
     count = 0
     for value in lst:
@@ -82,23 +110,38 @@ def count_correct(lst):
             count += 1
     return count
 
+# TODO: Move loop out to main event loop
 def main():
-    tick_duration = 180 #seconds
     tick_num = 0 #used for counting ticks
-    start_time = time.time()
+    start_time = None
 
     while True:
 
-        tick_num += 1
+        tick_info = team.get_tick_info()
+        tick_num = int(tick_info['tick_id'])
+        seconds_left = int(tick_info['approximate_seconds_left'])
 
-        try:
-            print("Tick " + str(tick_num) + ' (+' + str(time.time()-start_time) + 's)')
-            tick()
-        except Exception as e:
-            print(e)
+        if tick_num > current_tick:
+            current_tick = tick_num
+            start_time = time.time()
+            try:
+                print("\nRunning exploits for tick " + str(tick_num) + '\n')
+                run_all_exploits()
+                runtime = time.time() - start_time
+                print("\nExploits for tick " + str(tick_num) + 
+                    "finished after " + str(runtime) + 's\n')
+            except Exception as e:
+                runtime = time.time() - start_time
+                print('\nException after ' + str(runtime) + 's')
+                print(e)
+                print('\n')
 
-        sleep_duration = (start_time - time.time())%tick_duration
-        time.sleep(sleep_duration)
+        else:
+            if seconds_left > 1:
+                time.sleep(seconds_left - 1)
+            else:
+                time.sleep(1)
+
 
 if __name__ == "__main__":
   main()
