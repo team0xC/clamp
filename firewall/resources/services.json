@@ -1,0 +1,4 @@
+{
+  "simplecalc": ["tcp","10001"],
+  "simplecalc2": ["tcp","10002"]
+}

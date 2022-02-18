@@ -1,0 +1,17 @@
+[Unit]
+Description=firewall_sniffer
+
+[Service]
+Type=simple
+User=root
+Group=root
+Restart=always
+RestartSec=10
+RuntimeDirectory=capturer
+WorkingDirectory=@prj_dir@/src
+ExecStart=@home@/firewall_pyvenv/bin/python -m capturer -i @interface@
+LimitCORE=infinity
+LimitNOFILE=500000
+
+[Install]
+WantedBy=multi-user.target
