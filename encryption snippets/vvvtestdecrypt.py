@@ -1,5 +1,5 @@
 #decryption test
-from vvv import * #runs copy script
+from vvv import * 
 import os
 
 flags = 0

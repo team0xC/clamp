@@ -3,7 +3,7 @@
 # This allows users to access previously unencrypted files via the encrypted copy
 
 import os
-myPath = ""
+myPath = "C:/School/Security/append/"
 split_char = '_'
 
 """
@@ -65,13 +65,13 @@ Returns string
 """
 
 def vvv(un,pw):
-    pw_l, out, adv, pair_i = len(pw), '', 0, 0
+    pw_l, out, adv, pair_i,= len(pw), '', 0, 0
     for i in range(len(un)):
         un_ord, ani = ord(un[i]), -1 
         ani = 48 if 48 <= un_ord <= 57 else 55 if 65 <= un_ord <= 90 else 61 if 97 <= un_ord <= 122 else ani
         if ani >= 0:
-            adv = (i + pair_i + adv + ord(pw[adv%pw_l]))%99
-            un_ord = (un_ord - ani + adv)%62     
+            adv = (i + pair_i + adv + ord(pw[i%pw_l]) + ord(pw[adv%pw_l]))%97
+            un_ord = (un_ord - ani + adv)%62
             pair_i = abs(un_ord + un_ord - 61)
             un_ord = (185 - un_ord - adv)%62 
             un_ord += 48 if un_ord <= 9 else 55 if un_ord <= 35 else 61
