@@ -24,7 +24,7 @@
 
 ### one_gadget:
 > A tool to find the one gadget execve('/bin/sh', NULL, NULL) call.
-	https://github.com/david942j/one_gadget.git
+> https://github.com/david942j/one_gadget.git
 
 ### ROPgadget:
 >This tool lets you search your gadgets on your binaries to >facilitate your ROP exploitation.
