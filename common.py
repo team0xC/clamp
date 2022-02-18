@@ -46,6 +46,13 @@ class GameClient:
       if service[id_type] == identity:
         return service
 
+  # more compact way of getting tick info
+  def tick_info(self):
+    team.get_tick_info()
+    tick_num = int(tick_info['tick_id'])
+    seconds_left = int(tick_info['approximate_seconds_left'])
+    return (tick_num, seconds_left)
+
 
 if __name__ == '__main__':
   game_client = GameClient()
