@@ -3,7 +3,7 @@
 # This allows users to access previously unencrypted files via the encrypted copy
 
 import os
-myPath = "C:/School/Security/append/"
+myPath = ""
 split_char = '_'
 
 """
@@ -11,7 +11,7 @@ vvv() encrypts/decrypts
 
 DESIGN CRITERIA:
 1) Alphanumeric only (to limit errors when used in other programs)
-2) Requires a user provided key to encode/decode (which is not stored or known by the server)
+2) Requires a user provided key to encrypt/decrypt (which is not stored or known by the server)
 3) Output is identical in length to input (to limit errors when used in other programs)
 4) A single character change in the string to be encrypted causes a domino effect
 5) A single character change in the key causes a domino effect
@@ -25,7 +25,7 @@ It is assumed that there are 3 pieces of information.
 -Password (provided by user)
 -Contents (sent to user)
 The goal is to make it so all of these pieces of information are known only by the user, and are unknown by the server or any malicious party.
-The function that writes username, password and contents to file should be modified as well as for retrieval.
+The function that writes username, password and contents to file should be modified as well as the one for retrieval.
 
 This is done by taking the following steps:
 username2file = vvv(username, password)
@@ -44,11 +44,11 @@ Contents: FLGrandomstring
 It may also be ideal to delete or overwrite the contents of old files.
 
 HOW IT WORKS:
-Encrypts one character at a time
+Encrypts iterating one character at a time
 Encodes character as an integer representation of alphanumeric
 If not alphanumeric then no change
-Determine an offset value based on index, reflector pair, previous advance, and key
-Advance the Ceasar rotor by the offset
+Determines an offset value based on index, reflector pair, previous advance, and key
+Advances the Ceasar rotor by the offset
 Sends the input through the Ceasar rotor
 Uses a mirror reflector
 Sends the input through the Ceasar rotor in the reverse direction
@@ -67,17 +67,15 @@ Returns string
 def vvv(un,pw):
     pw_l, out, adv, pair_i = len(pw), '', 0, 0
     for i in range(len(un)):
-        un_ch, ani = un[i], -1 
-        un_ord = ord(un_ch)
+        un_ord, ani = ord(un[i]), -1 
         ani = 48 if 48 <= un_ord <= 57 else 55 if 65 <= un_ord <= 90 else 61 if 97 <= un_ord <= 122 else ani
         if ani >= 0:
             adv = (i + pair_i + adv + ord(pw[adv%pw_l]))%99
-            un_ord = (un_ord - ani + adv)%62
+            un_ord = (un_ord - ani + adv)%62     
             pair_i = abs(un_ord + un_ord - 61)
             un_ord = (185 - un_ord - adv)%62 
             un_ord += 48 if un_ord <= 9 else 55 if un_ord <= 35 else 61
-            un_ch = chr(un_ord)
-        out += un_ch
+        out += chr(un_ord)
     return out
 
 def vvv_test():
@@ -85,7 +83,7 @@ def vvv_test():
     pw = "t3hpvv4n1d10tvv0u1du530nh151u6646310ck"
     cont = "0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz!@#$%^&*()"
 
-    e_un = vvv(un,pw)
+    e_un = vvv(un,pw) 
     e_pw = vvv(pw,un)
     e_cont = vvv(cont,pw)
 
@@ -99,8 +97,7 @@ def vvv_test():
     print(vvv(e_un,e_pw))
     print(vvv(e_pw,e_un))
 
-def main():
-    vvv_test()
+def vvv_encrypt_files():
     num_files = 0
     file_list = next(os.walk(myPath))[2]
     for file in file_list:
@@ -120,6 +117,10 @@ def main():
             num_files += 1
 
     print("Created " + str(num_files) + " files.")
+
+def main():
+    vvv_test()
+    vvv_encrypt_files()
 
 if __name__ == "__main__":
     main()
