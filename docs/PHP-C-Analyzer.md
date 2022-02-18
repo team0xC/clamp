@@ -1,7 +1,7 @@
 # PHP / C - Code Analyzer Tools
 ## PHP program
 ### Encode PHP code
-> Upload encoded (Base-64) data to unphp.net
+> Upload decoded (Base-64) php program to http://unphp.net
 
 ### Php_Code_Analysis : Scan your PHP code for vulnerabilities
 
