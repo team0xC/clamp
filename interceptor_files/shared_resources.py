@@ -1,5 +1,8 @@
 import os
 from types import SimpleNamespace
+import importlib
+import string
+import re
 
 class SharedResources:
 
@@ -12,7 +15,7 @@ class SharedResources:
     self.paths.sessions = self.paths.log + 'sessions/'
     self.paths.attack = self.paths.sessions + 'attacks_against_others/'
     self.paths.defense = self.paths.sessions + 'attacks_against_us/'
-    self.paths.script_log = self.path.log + 'script_logs/'
+    self.paths.script_log = self.paths.log + 'script_logs/'
 
     self.intercept_scripts_folder = 'intercept_scripts'
     self.exploit_scripts_folder = 'exploit_scripts'
@@ -23,11 +26,15 @@ class SharedResources:
     self.paths.services = '/opt/ictf/services/'
 
     self.files = SimpleNamespace()
-    self.files.real_tokens = self.paths.script_log + 'real_files.log'
-    self.files.fake_tokens = self.paths.script_log + 'fake_files.log'
+    self.files.real_tokens = self.paths.script_log + 'real_tokens.log'
+    self.files.fake_tokens = self.paths.script_log + 'fake_tokens.log'
     self.files.fake_flags = self.paths.script_log + 'fake_flags.log'
+    self.files.real_flags = self.paths.script_log + 'real_flags.log'
+    self.files.seen_files = self.paths.script_log + 'seen_files.log'
 
-    self._get_services() # self.paths.flag = {<service_name>: <path>}
+    self.token_chars = string.ascii_lowercase + string.digits
+    self.flag_chars = self.token_chars + string.ascii_uppercase
+
     self.n_session_logs = 0
 
 
@@ -44,21 +51,76 @@ class SharedResources:
     return path + file
 
 
-  def update_scripts(self):
+  def read_script_files(self, script_path):
     # Gets only files as opposed to os.listdir
-    files = lambda path: next(os.walk(directory))[2]
-    self.exploit_scripts = files(self.paths.exploit_scripts)
-    self.intercept_scripts = files(self.paths.intercept_scripts)
+    files = next(os.walk(script_path))[2]
+    for i in range(len(files)):
+      if files[i][-3:] == '.py':
+        files[i] = files[i][:-3]
+    return files
 
 
-  def _get_services(self):
-    self.service_names = next(os.walk(self.services))[1]
+  def reload_scripts(self, package_name, script_files, modules):
+    for file in script_files:
+      module_path = package_name + '.' + file
+
+      # Check if exploit has previously been imported, dynamically reload if so
+      if file not in modules:
+        modules[file] = importlib.import_module(module_path)
+      else:
+        modules[file] = importlib.reload(modules[file])
+    return modules
+
+
+  def initialize_script(self, module):
+    class_name = module.class_name
+    script_obj = getattr(module, class_name)
+    return script_obj()
+
+
+  def set_services(self, services):
+    self.services = services
     self.paths.flag_dict = {}
-    for service_name in self.service_names:
-      service_base_path = self.paths.services + service_name
+    for service in self.services:
+      service_base_path = self.paths.services + service.name + '/service'
       append_path = service_base_path + '/append/'
       rw_path = service_base_path + '/rw/'
       if len(os.listdir(append_path)) > 0:
-        self.paths.flag_dict[service_name] = append_path
+        self.paths.flag_dict[service.name] = append_path
       else:
-        self.paths.flag_dict[service_name] = rw_path
+        self.paths.flag_dict[service.name] = rw_path
+
+
+  def create_random_token(self):
+    return ''.join(random.choices(self.token_chars, k=20))
+
+
+  def create_random_flag(self):
+    return 'FLG' + ''.join(random.choices(self.flag_chars, k=13))
+
+
+  # returns iteration object
+  def detect_flag_like(self, load):
+    regexp = r'FLG[A-Za-z0-9]{13}'
+    return re.finditer(regexp, load)
+
+
+  def detect_token_like(self, load):
+    regexp = r'[a-z0-9]{20}'
+    return re.finditer(regexp, load)
+
+
+  def flag_like_found(self, load):
+    flag_found = None
+    for match in self.detect_flag_like(load):
+      flag_found = match.group()
+      break
+    return flag_found is not None
+
+
+  def token_like_found(self, load):
+    token_found = None
+    for match in self.detect_token_like(load):
+      token_found = match.group()
+      break
+    return token_found is not None
