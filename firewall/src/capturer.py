@@ -6,12 +6,6 @@ from redis_connection import get_redis_connection
 import os
 import logging
 
-logging.basicConfig(filename="../summary_logs/sniffer.log",
-                    filemode='a',
-                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                    datefmt='%H:%M:%S',
-                    level=logging.DEBUG)
-
 
 class SniffBlock(object):
 
@@ -29,7 +23,10 @@ class SniffBlock(object):
         src_port = packet[protocol].srcport
         # dst_addr = packet.ip.dst
         dst_port = packet[protocol].dstport
-        src_eth = packet.eth.src
+        try:
+            src_eth = packet.eth.src
+        except:
+            src_eth = "undefined"
         # dst_eth = packet.eth.dst
         sniff_time = packet.sniff_time
         # packet_length = packet.length
@@ -38,6 +35,8 @@ class SniffBlock(object):
             decoded_data = bytearray.fromhex(packet.data.data).decode()
         except AttributeError:
             decoded_data = None
+        except UnicodeDecodeError:
+            decoded_data = "cat"
 
         if decoded_data:
             payload = {
@@ -52,7 +51,7 @@ class SniffBlock(object):
             }
             payload = json.dumps(payload)
             if self._debug:
-                logging.info(json.dumps(payload))
+                print(json.dumps(payload))
             self._redis_con.lpush("ip_kill", payload)
 
     def sniffer(self):

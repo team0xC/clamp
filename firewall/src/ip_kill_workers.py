@@ -40,12 +40,11 @@ def worker(queue_name, bl_path, bl_read_freq=60, kill_sec=5):
             src_ip = message.get('sip')
             src_port = message.get('sp')
             dst_port = message.get('dst_port')
-            data = message.get('d')
+            data = message.get('d').replace("\n", " ")
             for i in bl_keywords.get(dst_port, bl_keywords["*"]):
                 if i in data:
                     if not r_conn.get(f"{src_ip}__{src_port}"):
-                        command = f"timeout {kill_sec}s tcpkill -i  {interface} -9 host {src_ip} and port {src_port} "\
-                                  f">/dev/null 2>&1"
+                        command = f"sudo timeout {kill_sec}s tcpkill -i any -9 host {src_ip} and port {src_port} >/dev/null 2>&1"
                         subprocess.Popen(command, shell=True)
                         logging.info(f"BLOCKED::::::IP:{src_ip}--Port:{src_port}--Data:{data}:::")
                         r_conn.setex(f"{src_ip}__{src_port}", kill_sec, 1)
@@ -59,7 +58,7 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--bl_file", help="Blacklisted keywords file path", required=False,
                         default="../resources/bl_keywords.json")
     parser.add_argument("-k", "--kill_sec", help="duration to open tcpkill monitor for an ip and port", required=False,
-                        default=5, type=int)
+                        default=6, type=int)
     parser.add_argument("-n", "--name", help="worker name", required=True)
     args = parser.parse_args()
 

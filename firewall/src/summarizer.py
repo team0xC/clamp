@@ -8,10 +8,11 @@ from datetime import datetime
 from pathlib import Path
 
 
-def summarizer(queue_name, log_path, freq):
+def summarizer(queue_name, log_path1, freq):
     r_conn = get_redis_connection()
     start_time = time()
     messages = {}
+    log_suffix=8
     while True:
         encoded_message = r_conn.rpop(queue_name)
         if not encoded_message:
@@ -27,7 +28,7 @@ def summarizer(queue_name, log_path, freq):
             src_ip = message.get('sip')
             dst_port = message.get('dp')
             src_eth = message.get('se').replace(":", "-")
-            data = message.get('d')[:-1]
+            data = message.get('d')[:-1].replace("\n", " ")
             sniff_time = datetime.strptime(message.get('st'), "%Y-%m-%d %H:%M:%S.%f")
             key = f"{interface}/{src_ip}/{src_eth}/{dst_port}"
             if key in messages:
@@ -37,6 +38,8 @@ def summarizer(queue_name, log_path, freq):
                 messages[key] = {'sniff_time': [sniff_time], 'data': [data]}
 
         if time() - start_time > freq:
+            log_suffix += 1
+            log_path = log_path1.split(".csv")[0]+str(log_suffix)+".csv"
             if Path(log_path).exists():
                 with open(log_path) as csv_file:
                     csv_reader = csv.reader(csv_file, delimiter=',')
@@ -89,7 +92,7 @@ if __name__ == '__main__':
     parser.add_argument("-l", "--log_path", help="log path", required=False,
                         default="../summary_logs/firewall_summary.csv")
     parser.add_argument("-t", "--freq", help="frequency of summary generation in seconds", required=False,
-                        default=120, type=int)
+                        default=300, type=int)
     args = parser.parse_args()
 
-    summarizer(queue_name=args.queue_name, log_path=args.log_path, freq=args.freq)
+    summarizer(queue_name=args.queue_name, log_path1=args.log_path, freq=args.freq)
