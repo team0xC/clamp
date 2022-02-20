@@ -1,5 +1,8 @@
     vvv README
 
+    vvv.py is the primary file and contains the algorithm that was adapted to other languages
+    below is copied the function description for vvv() in vvv.py.
+
     DESIGN CRITERIA:
     1) Alphanumeric only (to limit errors when used in other programs)
     2) Requires a user provided key to encrypt/decrypt (which is not stored or known by the server)
@@ -26,7 +29,7 @@
     Even if the hacker creates files to observe the enryption behavior or can study the algorithm, the encryption is much more difficult to crack than something like a ROT13 cipher.
     Even relative security is sufficient due to the opprotunity cost of trying to develop an exploit that only works on one team, only have to be more secure than other bikes on the bike rack.
     It is ideal that the hacker not have access to encrypted data or the shell in the first place, but this provides another line of defence even if exploits are patched and new ones are found.
-    This approach can be planned even without knowing the specific vulnerabilities because it takes a generalized approach.
+    This approach can be planned even without knowing the specific vulnerabilities because it takes a generalized approach and offers protection even if analysis misses vulnerabilties.
 
     Confidentiality - The identifying data and the confidential data is only ever saved encrypted
     Integrity - The encrypted data can be decrypted only when a key is present, but the integrity is preserved because it can be decrypted and strlen and punctuation are constant
@@ -66,9 +69,9 @@ The server only verifies the login info against the encrypted login info and has
 TT,.-=*^^-._. <(flagID)  __________  
 || FLAG BOT/   (FLGpw)  |  ______  | ( flagID # FLGpw -> )  wSfnFc_QM9u5.bak [MeleW]                    
 ||BEEP BOOP|            | |  \/  | | ,'                     1Ep8ui_8Vw2h.bak [m007y]  
-||.-=*^^-.__\  (FLGfl)> | |__/\__| | ( <- m007y # FLGpw )   Db173h_d744s.bak [w75nk]             
-||                      |__________| ~'  
-      ~*¡CORRECT!*~        ======
+||.-=*^^-.__\  (FLGfl)> | |__/\__| | ( <- MeleW # FLGpw )   Db173h_d744s.bak [w75nk]             
+||                      |__________| ~'                     ip2Bd3_fmut3.bak [61T5x]
+      ~*¡CORRECT!*~        ======                           3dw4Rd_WhPt4.bak [b3B0p]
 
     The function can be used to encrypt all data in a way that requires the key to be provided for decryption
 
@@ -87,6 +90,9 @@ TT,.-=*^^-._. <(flagID)  __________
         Contents: FLGrandomstring
 
     It may also be ideal to delete or overwrite the contents of old files.
+
+    The initial values for adv, pair_i and the advance rotor modulo can be altered to produce different results. 
+    Additional rotors may be added, or rotors may be removed, at the risk of compromizing certain characteristics.
 
     HOW IT WORKS:
     Encrypts iterating one character at a time                                                          (un_ord: ordinal username; char as int)
@@ -107,6 +113,8 @@ TT,.-=*^^-._. <(flagID)  __________
     Encodes the character as ASCII                                                                      (un_ord: ordinal username)
     Adds to string                                                                                      (out += chr(un_ord); converts int to chr)
     Returns string
+
+    Fig 5. Series rotor representation
                    ___         ___         ___         ___         ___     __
       [input]--> /abcde\\    /mnopa\\    /jklmn\\<---/bcefg\\--->/defgh\\   '\
                 |p     f||->|l     b||  |i     o||  |a     h||<-|c     i||->-.\
@@ -120,7 +128,29 @@ TT,.-=*^^-._. <(flagID)  __________
                 *total adv                \_Y_//      \___//
                                         (prev*adv)    (inc)   secondary rotors (separate to create up to nth triangle # advance offsets)
 
-    A single advancing rotor does the same thing as multiple rotors individually stepped with shift cipher and relatively cheap.        
+    Fig 6. Modified with counting rotor
+                   ___     __
+      [input]--> /abcde\\   '\
+                |p     f||->-.\
+     [output]<--|o  O  g||   v ) mirror reflector (retroreflector)
+                |n     h||-<-'/-.
+          ____   \mlkji//  _./   |
+         / E \\     ^            |  
+     .->|K O Y||-.  |            | (pair_i)
+    |    \___//   | |            |
+    |             V_|____        |
+    |           /1234567\\<-----'          
+  (inc)------>/no       89\\
+    .---------|m    O    a||    
+    V         \lk       cb//    advance offset counting rotor
+  (prev adv)--->\jihgfed//      (a=10, b=11..)
+    |     ___     ^   
+    |    / K \\   |   
+     `->|  O E||-'  
+         \_Y_//      
+ 
+    A single advancing rotor does almost the same thing as multiple rotors individually stepped with shift cipher and relatively cheap.
+    Instead of 5 separate rotors, there is a separate rotor that counts steps, which also rotates with a modulo function.    
     The path is the same from input->output as it is from output->input. 
     The advance changes the effective center point of the reflector relative to the input side of the rotor.
     Secondary key rotors are like simplified 90's DRM codewheels.
@@ -133,3 +163,20 @@ TT,.-=*^^-._. <(flagID)  __________
         "Caesar cipher" by Caesar, G. J. (~80BC)
         "Enigma machine" by Scherbius, A. (1918 not-BC)
         "Dial-A-Pirate" by Gilbert, R. (1990)
+
+    Appendix/Glossary:
+
+    Caesar cipher - A substitution cipher that offsets the character by 3, althouh tt is often used for cipher disks that use any offset.
+    Flexibility is offers because the offset can be varied and the cipher disk loops around to the start. Commonly used as ROT13
+    ABCDEFGHIJLKMNOPQRSTUVWXYZ
+    DEFGHIJKLMNOPQRSTUVWXYZABC
+
+    Enigma machine - An rotor based electromechanical encryption device used in WWII. A reflector made the machine involutory.
+    Advancing rotors made it notoriously difficult to crack. The 'bombe,' based on the prior art the Polish 'bomba,' 
+    was designed by Alan Turing as an electromechanical computer to crack enigma encryption.
+
+    Dial-a-Pirate - A cardboard cipher disk for the 1990 Lucasfilms game "The Secret of Monkey Island" by Ron Gilbert.
+    The cipher disk utilized faces of pirates that were split into upper and lower halves as the key. 
+    The user would have to match a face combination given by the computer program and give a year based on a location on the cipher disk.
+    This was an early form of DRM and ensured the secret of Monkey Island™ would only be revealed to legitimate users with a cipher disk,
+    and prevented it from being pirated by dreadful guys.
