@@ -3,7 +3,7 @@ import os
 from common import game_client, team
 import importlib
 import math
-import models
+# import models
 
 
 class Executor:
@@ -13,26 +13,23 @@ class Executor:
     self.paths = resources.paths
     self.files = resources.files
 
-    self.exploit_modules = {}
-    self.exploit_success = {}
-      self.current_tick = -1
+    self.modules = {}
+    self.successes = {}
+    self.current_tick = -1
+
+
+  def load_exploits(self):
+    files = self.res.read_script_files(self.paths.exploit_scripts)
+    self.modules = self.res.reload_scripts(
+      self.exploit_scripts_folder, files, self.modules)
+    for name in files:
+      if name not in successes:
+        self.successes[name] = 0
+
+      # self.add_exploit_to_db(name)
+
 
   def run_all_exploits(self):
-    #get exploits
-    exploit_list = get_exploits_list()
-    rebuild_path = lambda name: self.paths.exploit_scripts + name + '.py'
-    for exploit_name in exploit_list:
-      # Track module objects of exploits that have already been loaded
-      exploit_modules[exploit_name] = load_exploit(exploit_name)
-
-      # initialize successes of new exploits
-      if exploit_name not in exploit_success:
-        exploit_success[exploit_name] = 0
-
-      # Warning: slow
-      add_exploit_to_db(exploit_name)
-
-        
     # e.g. {<service_id>: [<team_id>, ...], ...}
     target_services = services_up()
 
@@ -40,9 +37,10 @@ class Executor:
     # Alternatively, queue exploits for each team, don't fix what isn't broken and only change exploits for a given team (and only that team) if it stops working
 
     # process exploit with most successes first
-    exploit_list = sort_exploits(exploit_success) 
-    for exploit_name in exploit_list:
-      exploit = get_exploit(exploit_name)
+    exploit_list = self.sort_exploits(self.successes) 
+    for name in exploit_list:
+      module = self.modules[name]
+      exploit = self.res.initialize_script(module)
       flags = []
       target_team_ids = target_services[exploit.service.id]
       for team_id in target_team_ids:
@@ -61,23 +59,7 @@ class Executor:
       for i in range(batches):
         submission = flags[i * 100:(i + 1) * 100]
         results = team.submit_flag(flags)
-        exploit_success[exploit_name] += count_correct(results)
-
-    #TODO: sort database based on flag captures
-    # Q: Premature optimization? 
-    #    There will be at most 10-20 exploits. Sorting is o(nlogn).
-    #    Querying the database is ???
-
-  # Get list of exploits from scripts directory, 
-  # then remove file extensions to make importing easier
-  def get_exploits_list(self):
-    directory = self.paths.exploit_scripts
-    exploits_list = next(os.walk(directory))[2] # Gets only files as opposed to os.listdir
-    for i in range(len(exploits_list)):
-      exploit = exploits_list[i]
-      if exploit[-3:] == '.py':
-        exploits_list[i] = exploits[:-3]
-    return exploits_list
+        self.successes[exploit_name] += self.count_correct(results)
 
 
   # Create dictionary of {<service_id>: [<team_id>, ...]...}
@@ -97,86 +79,36 @@ class Executor:
       return service_list
 
   # Sort exploits by number of successes achieved
-  def sort_exploits(exploit_success):
-    exploit_list = list(exploit_success.items())
+  def sort_exploits(self):
+    exploit_list = list(self.successes.items())
     exploit_list.sort(key=lambda x: x[1], reverse=True)
     return exploit_list
 
-  # Dynamically load exploit and save object
-  def load_exploit(exploit_name):
-    module_path = self.res.exploit_scripts_folder + '.' + exploit_name
 
-    # Check if exploit has previously been imported, dynamically reload if so
-    if exploit_name not in exploit_modules:
-      module = importlib.import_module(module_path)
-    else:
-      module = importlib.reload(exploit_modules[exploit_name])
-    return module
-
-  def get_exploit(exploit_name):
-    module = exploit_modules[exploit_name]
-    class_name = module.class_name
-    exploit_class = getattr(module, class_name)
-    return exploit_class(game_client)
-
-# add new modules to database
-  def add_exploit_to_db(exploit_name):
+  # add new modules to database
+  def add_exploit_to_db(self, exploit_name):
     engine = models.get_db_engine()
     Session = models.get_db_session(engine)
     Exploit = models.Exploit
+    rebuild_path = lambda name: self.paths.exploit_scripts + name + '.py'
     exploit_fullpath = rebuild_path(exploit_name)
     with Session() as session:
       with session.begin():
-      if not session.query(Exploit.query.filter(
-        Exploit.path == exploit_fullpath).exists()
-        ).scalar():
+        if not session.query(Exploit.query.filter(
+          Exploit.path == exploit_fullpath).exists()
+          ).scalar():
 
-        exploit_obj = get_exploit(exploit_name)
-        new_exploit = Exploit(
-          path = exploit_fullpath,
-          service_id = exploit_obj.service.id)
-        session.add(new_exploit)
+          module = self.modules[exploit_name]
+          exploit_obj = self.res.initialize_script(module)
+          new_exploit = Exploit(
+            path = exploit_fullpath,
+            service_id = exploit_obj.service.id)
+          session.add(new_exploit)
 
-# Count number of correct values returned after submitting flags
-  def count_correct(lst):
+  # Count number of correct values returned after submitting flags
+  def count_correct(self, lst):
     count = 0
     for value in lst:
       if value == 'correct':
         count += 1
     return count
-
-# TODO: Move loop out to main event loop
-def main():
-  tick_num = 0 #used for counting ticks
-  start_time = None
-
-  while True:
-
-    tick_info = team.get_tick_info()
-    tick_num = int(tick_info['tick_id'])
-    seconds_left = int(tick_info['approximate_seconds_left'])
-
-    if tick_num > current_tick:
-      current_tick = tick_num
-      start_time = time.time()
-      try:
-        print("\nRunning exploits for tick " + str(tick_num) + '\n')
-        run_all_exploits()
-        runtime = time.time() - start_time
-        print("\nExploits for tick " + str(tick_num) + 
-          "finished after " + str(runtime) + 's\n')
-      except Exception as e:
-        runtime = time.time() - start_time
-        print('\nException after ' + str(runtime) + 's')
-        print(e)
-        print('\n')
-
-    else:
-      if seconds_left > 1:
-        time.sleep(seconds_left - 1)
-      else:
-        time.sleep(1)
-
-
-if __name__ == "__main__":
-  main()

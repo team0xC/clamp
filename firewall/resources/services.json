@@ -1,0 +1,6 @@
+{
+  "backup": ["tcp","10001"],
+  "saywhat": ["tcp","10002"],
+  "flaskids": ["tcp","10003"],
+  "sampleak": ["tcp","10004"]
+}
