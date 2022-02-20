@@ -10,7 +10,7 @@ def vvv(un,pw):
     1) Alphanumeric only (to limit errors when used in other programs)
     2) Requires a user provided key to encrypt/decrypt (which is not stored or known by the server)
     3) Output is identical in length to input (to limit errors when used in other programs)
-    4) A single character change in the string to be encrypted causes a domino effect
+    4) A single character change in the string to be encrypted causes a domino effect (no obvious ciphered "FLG")
     5) A single character change in the key causes a domino effect 
     6) The same function can be used to decrypt and encrypt
     7) Standardized behavior between languages in case services interact
@@ -113,16 +113,16 @@ TT,.-=*^^-._. <(flagID)  __________
     Encodes the character as ASCII                                                                      (un_ord: ordinal username)
     Adds to string                                                                                      (out += chr(un_ord); converts int to chr)
     Returns string
-                   ___         ___         ___         ___         ___       __
-      [input]--> /abcde\\    /mnopa\\    /jklmn\\<---/bcefg\\--->/defgh\\     '\
-                |p     f||->|l     b||  |i     o||  |a     h||<-|c     i||-->--.\
-     [output]<--|o  O  g||======O  c||======O  p||======O  i||======O  j||     v ) mirror reflector (retroreflector)
-                |n     h||<-|j     d||->|g     a||  |p     j||  |a     k||--<--'/-.
-                 \mlkji//    \ihgfe//<---\fedcb//--->\onmlk//    \ponml//    _./   \ 
-       advances   ^   |         ^         |    ^           ^        ^               | 
-                  |   |         |       .' ___  `.     ___  `.      |              /
-                   `-'        (inc)    |  / K \\  |   / E \\  |      `------------'
-                (prev*adv)             `>|  O E||-'  |K O Y||-'         (pair_i)
+                   ___         ___         ___         ___         ___     __
+      [input]--> /abcde\\    /mnopa\\    /jklmn\\<---/bcefg\\--->/defgh\\   '\
+                |p     f||->|l     b||  |i     o||  |a     h||<-|c     i||->-.\
+     [output]<--|o  O  g||======O  c||======O  p||======O  i||======O  j||   v ) mirror reflector (retroreflector)
+                |n     h||<-|j     d||->|g     a||  |p     j||  |a     k||-<-'/-.
+                 \mlkji//    \ihgfe//<---\fedcb//--->\onmlk//    \ponml//  _./   \ 
+       advances   ^   |         ^         |    ^           ^        ^             | 
+                  |   |         |       .' ___  `.     ___  `.      |            /
+                   `-'        (inc)    |  / K \\  |   / E \\  |      `----------'
+                (prev*adv)             `>|  O E||-'  |K O Y||-'        (pair_i)
                 *total adv                \_Y_//      \___//
                                         (prev*adv)    (inc)   secondary rotors (separate to create up to nth triangle # advance offsets)
 

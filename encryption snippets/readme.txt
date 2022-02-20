@@ -4,7 +4,7 @@
     1) Alphanumeric only (to limit errors when used in other programs)
     2) Requires a user provided key to encrypt/decrypt (which is not stored or known by the server)
     3) Output is identical in length to input (to limit errors when used in other programs)
-    4) A single character change in the string to be encrypted causes a domino effect
+    4) A single character change in the string to be encrypted causes a domino effect (no obvious ciphered "FLG")
     5) A single character change in the key causes a domino effect 
     6) The same function can be used to decrypt and encrypt
     7) Standardized behavior between languages in case services interact
