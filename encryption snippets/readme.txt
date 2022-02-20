@@ -1,10 +1,4 @@
-import os
-myPath = "opt/ictf/services"
-split_char = '_'
-
-def vvv(un,pw):
-    """
-    vvv() encrypts/decrypts
+    vvv README
 
     DESIGN CRITERIA:
     1) Alphanumeric only (to limit errors when used in other programs)
@@ -113,16 +107,16 @@ TT,.-=*^^-._. <(flagID)  __________
     Encodes the character as ASCII                                                                      (un_ord: ordinal username)
     Adds to string                                                                                      (out += chr(un_ord); converts int to chr)
     Returns string
-                   ___         ___         ___         ___         ___       __
-      [input]--> /abcde\\    /mnopa\\    /jklmn\\<---/bcefg\\--->/defgh\\     '\
-                |p     f||->|l     b||  |i     o||  |a     h||<-|c     i||-->--.\
-     [output]<--|o  O  g||======O  c||======O  p||======O  i||======O  j||     v ) mirror reflector (retroreflector)
-                |n     h||<-|j     d||->|g     a||  |p     j||  |a     k||--<--'/-.
-                 \mlkji//    \ihgfe//<---\fedcb//--->\onmlk//    \ponml//    _./   \ 
-       advances   ^   |         ^         |    ^           ^        ^               | 
-                  |   |         |       .' ___  `.     ___  `.      |              /
-                   `-'        (inc)    |  / K \\  |   / E \\  |      `------------'
-                (prev*adv)             `>|  O E||-'  |K O Y||-'         (pair_i)
+                   ___         ___         ___         ___         ___     __
+      [input]--> /abcde\\    /mnopa\\    /jklmn\\<---/bcefg\\--->/defgh\\   '\
+                |p     f||->|l     b||  |i     o||  |a     h||<-|c     i||->-.\
+     [output]<--|o  O  g||======O  c||======O  p||======O  i||======O  j||   v ) mirror reflector (retroreflector)
+                |n     h||<-|j     d||->|g     a||  |p     j||  |a     k||-<-'/-.
+                 \mlkji//    \ihgfe//<---\fedcb//--->\onmlk//    \ponml//  _./   \ 
+       advances   ^   |         ^         |    ^           ^        ^             | 
+                  |   |         |       .' ___  `.     ___  `.      |            /
+                   `-'        (inc)    |  / K \\  |   / E \\  |      `----------'
+                (prev*adv)             `>|  O E||-'  |K O Y||-'        (pair_i)
                 *total adv                \_Y_//      \___//
                                         (prev*adv)    (inc)   secondary rotors (separate to create up to nth triangle # advance offsets)
 
@@ -139,82 +133,3 @@ TT,.-=*^^-._. <(flagID)  __________
         "Caesar cipher" by Caesar, G. J. (~80BC)
         "Enigma machine" by Scherbius, A. (1918 not-BC)
         "Dial-A-Pirate" by Gilbert, R. (1990)
-
-    :param un: string to be encrypted
-    :param pw: string to be used as key
-    :return: returns encrypted string
-    """
-    pw_l, out, adv, pair_i,= len(pw), '', 0, 0
-    for i in range(len(un)):
-        un_ord, ani = ord(un[i]), -1 
-        ani = 48 if 48 <= un_ord <= 57 else 55 if 65 <= un_ord <= 90 else 61 if 97 <= un_ord <= 122 else ani
-        if ani >= 0:
-            adv = (i + pair_i + adv + ord(pw[i%pw_l]) + ord(pw[adv%pw_l]))%97
-            un_ord = (un_ord - ani + adv)%62
-            pair_i = abs(un_ord + un_ord - 61)
-            un_ord = (185 - un_ord - adv)%62 
-            un_ord += 48 if un_ord <= 9 else 55 if un_ord <= 35 else 61
-        out += chr(un_ord)
-    return out
-
-
-
-
-# UTILITY FUNCTIONS
-def vvv_test():
-    un = "h4ck3r0n573r01d5"
-    pw = "t3hpvv4n1d10tvv0u1du530nh151u6646310ck"
-    cont = "0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz!@#$%^&*()"
-
-    e_un = vvv(un,pw) 
-    e_pw = vvv(pw,un)
-    e_cont = vvv(cont,pw)
-
-    print("\nFilename: " + e_un + '_' + e_pw)
-    print("Encrypted Contents: " + e_cont + '\n')
-    print("Retrieve from file:")
-    if e_un == vvv(un,pw):
-        if e_pw == vvv(pw,un):
-            print("Decrypted Contents: " + vvv(e_cont,pw))
-
-    print(vvv(e_un,e_pw))
-    print(vvv(e_pw,e_un))
-
-def vvv_encrypt_files():
-    num_files = 0
-    file_list = next(os.walk(myPath))[2]
-    file_list_2 = file_list.copy()
-    for i in range(len(file_list)):
-        unpw = file_list_2[i][:-11].split(split_char)
-        if len(unpw) == 2:
-            un = unpw[0]
-            pw = unpw[1]
-            e_un = vvv(un,pw)
-            e_pw = vvv(pw,un)
-            if (e_un+split_char+e_pw+'.secure.bak' in file_list):
-                file_list.remove(e_un+split_char+e_pw+'.secure.bak')
-                file_list.remove(un+split_char+pw+'.secure.bak')
-    for file in file_list:
-        unpw = file[:-11].split(split_char)
-        if len(unpw) == 2:
-            un = unpw[0]
-            pw = unpw[1]
-            e_un = vvv(un,pw)
-            e_pw = vvv(pw,un)
-            file1 = open(myPath+file, "r")
-            cont = file1.read()
-            file1.close()
-            e_cont = vvv(cont,pw)
-            file2 = open(myPath + e_un + '_' + e_pw + '.secure.bak', "w")
-            file2.write(e_cont)
-            file2.close()
-            num_files += 1
-
-    print("Created " + str(num_files) + " files.")
-
-def main():
-    vvv_test()
-    vvv_encrypt_files()
-
-if __name__ == "__main__":
-    main()

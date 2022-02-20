@@ -17,7 +17,7 @@ char *vvv(char un[], char pw[])
         int ani;
         ani = un_ord>=48&&un_ord<=57 ? 48 : un_ord>=65&&un_ord<=90 ? 55 : un_ord>=97&&un_ord<=122 ? 61 : -1;
         if (ani >= 0) {
-            adv = (i + pair_i + adv + pw[adv%pw_l] + pw[i%pw_l])%99;
+            adv = (i + pair_i + adv + pw[adv%pw_l] + pw[i%pw_l])%97;
             un_ord = (un_ord - ani + adv)%62;
             pair_i = abs(un_ord + un_ord - 61);
             un_ord = (185 - un_ord - adv)%62;

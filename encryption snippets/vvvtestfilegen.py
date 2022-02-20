@@ -7,7 +7,7 @@ def randstr():
     str = string.ascii_letters + string.digits
     return ''.join(random.choice(str) for i in range(random.randrange(10, 30)))
 
-for i in range(100):
+for i in range(10):
     file1 = open(myPath + randstr() + '_' + randstr(), "w")
     file1.write('FLG' + randstr())
     for i in range(20):
