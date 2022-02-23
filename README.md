@@ -10,9 +10,6 @@ CLAMP consist of the following elements, organized by the member of the team tha
 
 ### Joshua Gomez
 
-	- [pctf.db](data/pctf.db)
-	- [models.py](models.py)
-
 This database stores vulnerabilities and exploit scripts. It includes models (see the [code](models.py)) using the  *sqlalchemy* ORM to provide an interface. For more information, see the directory [data](data/).
 
 ### Jonathan Chang
@@ -58,8 +55,15 @@ Tests are run with Python's standard testing package `unittest`.
 		(ENV)$ python -m unittest
 		
 
-## Authors
+## Dependencies
 
+* Dumpcap - [https://www.wireshark.org/docs/man-pages/dumpcap.html](https://www.wireshark.org/docs/man-pages/dumpcap.html)
+* Scapy 2.4.5 - [https://scapy.readthedocs.io/en/latest/](https://scapy.readthedocs.io/en/latest/)
+* PyShark 0.4.5 - [http://kiminewt.github.io/pyshark/](http://kiminewt.github.io/pyshark/)
+* SQL Alchemy 1.4 - [https://docs.sqlalchemy.org/en/14/intro.html#installation](https://docs.sqlalchemy.org/en/14/intro.html#installation)
+* SWPAG Client 0.3.7 - [https://pypi.org/project/swpag-client/](https://pypi.org/project/swpag-client/)
+
+## Authors
 
 * **Joshua Gomez** - [joshuago78](https://github.com/joshuago78)
 * **Jonathan Chang** - [jachang820](https://github.com/jachang820)
