@@ -36,15 +36,15 @@ In addition, a [comprehensive checklist](https://docs.google.com/document/d/13cR
 
 ## Developer Setup
 
-0. Create a virtual Python environment
+1. Create a virtual Python environment
 
 		$ python3 -m venv ENV
 
-1. Activate the virtual environment
+2. Activate the virtual environment
 
 		$ source ENV/bin/activate
 
-2. Install the dependencies
+3. Install the dependencies
 
 		(ENV)$ pip install -r requirements.txt
 
