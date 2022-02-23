@@ -67,7 +67,7 @@ Tests are run with Python's standard testing package `unittest`.
 
 * **Joshua Gomez** - [joshuago78](https://github.com/joshuago78)
 * **Jonathan Chang** - [jachang820](https://github.com/jachang820)
-* **Michael Kotovsky** - [joshuago78](https://github.com/mkotovsk-asu-edu)
-* **Kumar Raj** - [joshuago78](https://github.com/k-raj)
-* **Mehran Tajbakhsh** - [joshuago78](https://github.com/MehranTJB)
-* **Jonathan Ong** - [joshuago78](https://github.com/jonathanongucla)
+* **Michael Kotovsky** - [mkotovsk-asu-edu](https://github.com/mkotovsk-asu-edu)
+* **Kumar Raj** - [k-raj](https://github.com/k-raj)
+* **Mehran Tajbakhsh** - [MehranTJB](https://github.com/MehranTJB)
+* **Jonathan Ong** - [jonathanongucla](https://github.com/jonathanongucla)
