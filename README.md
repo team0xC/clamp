@@ -1,23 +1,41 @@
 # CLAMP
-CTF Logger Analyzer Mimicker Patcher
 
-CLAMP consist of the following elements:
+## Project Description
 
-1. Database of vulnerabilities and exploits
+CLAMP was developed as the final project for ASU's CSE545 Software Security, as a set of tools to more effectively play in the class CTF competition. CLAMP stands for *CTF Logger Analyzer Mimicker Patcher*, the parts that were originally conceived to be in the project. However, since the short time frame of the course precluded dependencies between the parts, and since the analyzer and mimicker depended on having an interface to the logger and sample *pcap* files similar to actual CTF attacks, we opted to replace these parts with a firewall and encryption scripts that could be used to patch services.
+
+## The Elements
+
+CLAMP consist of the following elements, organized by the member of the team that authored them. Despite varying contributions to code, we'd stress that each member provided equally valuable input throughout the project cycle, much of which is in between the lines of code.
+
+### Joshua Gomez
+
 	- [pctf.db](data/pctf.db)
 	- [models.py](models.py)
-2. Executor: the orchestrator of attacks
-	- [executor.py](executor.py)
-3. Logger of traffic
-	- [docs/logger.md](docs/logger.md)
-4. Analyzer of traffic
-	- [analyzer.py](analyzer.py)
-5. Mimicker of attacks
-	- TBD
-6. Patcher of vulnerabilities
-	- [docs/patcher_checklist.md](docs/patcher_checklist.md)
-	- https://docs.google.com/document/d/13cRbKB0WiuiLUDPpQ-4POr7_HJplsGUN54HbSIjyc6Y/edit?usp=sharing
 
+This database stores vulnerabilities and exploit scripts. It includes models (see the [code](models.py)) using the  *sqlalchemy* ORM to provide an interface. For more information, see the directory [data](data/).
+
+### Jonathan Chang
+
+The executor and interceptor runs scripts to exploit services and reset incoming connections respectively. For more information, see the directory [executor](executor/).
+
+### Michael Kotovsky
+
+The logger, configurable with *Berkeley Packet Filter (BPF)* syntax generates Wireshark .pcap files on demand. For more information, see the directory [capture](capture/).
+
+### Kumar Raj
+
+The firewall monitors incoming TCP requests and sends a reset flag whenever any keywords on its black list are encountered. For more information, see the directory [firewall](firewall/).
+
+### Mehran Tajbakhsh
+
+The analyzer pattern matches for flags in the bodies of incoming TCP requests, and could be expanded for more functionality (see the [code](analyzer.py)). A list of useful tools during the competition was also compiled. For more information, see the directory [doc](docs/).
+
+### Jonathan Ong
+
+These are encryption snippets written in C, PHP and Python, so that we could setup the encryption patch as quickly as possible. For more information, see the directory [encryption snippets](encryption%20snippets).
+
+In addition, a [comprehensive checklist](https://docs.google.com/document/d/13cRbKB0WiuiLUDPpQ-4POr7_HJplsGUN54HbSIjyc6Y/edit?usp=sharing) was maintained.
 
 ## Developer Setup
 
@@ -39,3 +57,13 @@ Tests are run with Python's standard testing package `unittest`.
 
 		(ENV)$ python -m unittest
 		
+
+## Authors
+
+
+* **Joshua Gomez** - [joshuago78](https://github.com/joshuago78)
+* **Jonathan Chang** - [jachang820](https://github.com/jachang820)
+* **Michael Kotovsky** - [joshuago78](https://github.com/mkotovsk-asu-edu)
+* **Kumar Raj** - [joshuago78](https://github.com/k-raj)
+* **Mehran Tajbakhsh** - [joshuago78](https://github.com/MehranTJB)
+* **Jonathan Ong** - [joshuago78](https://github.com/jonathanongucla)
