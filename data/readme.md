@@ -1,6 +1,35 @@
 # Database
 
-The file [models.py](../models.py) define and initialize an `sqlite3` database through the `sqlalchemy` ORM. Three tables are created: Service, Vuln, and Exploit. Each service has potentially many vulnerabilities, and each vulnerability and service have potentially many exploits, in many-to-one relationships. 
+The file [models.py](../models.py) define and initialize an `sqlite3` database through the `sqlalchemy` ORM. Three tables are created: Service, Vuln, and Exploit. Each service has potentially many vulnerabilities, and each vulnerability and service have potentially many exploits, in many-to-one relationships.
+
+## Entity Relationship Diagram for CLAMP DB
+
+```mermaid
+erDiagram
+  SERVICE ||--o{ EXPLOIT : attacked_by
+  SERVICE ||--o{ VULNERABILITY : has
+  SERVICE {
+    int id
+    string name
+    int port
+  }
+  VULNERABILITY {
+    int id
+    bool benign
+    bool patched
+    string sequence
+    int service
+  }
+  EXPLOIT ||--o{ VULNERABILITY: exploits
+  EXPLOIT {
+    int id
+    string path
+    int flagCountRound
+    int flagCountCumulative
+    int vuln
+    int service
+  }
+``` 
 
 ### Usage
 
