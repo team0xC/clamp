@@ -8,31 +8,29 @@ CLAMP was developed as the final project for ASU's CSE545 Software Security, as 
 
 CLAMP consist of the following elements, organized by the member of the team that authored them. Despite varying contributions to code, we'd stress that each member provided equally valuable input throughout the project cycle, much of which is in between the lines of code.
 
-#### Joshua Gomez
+#### Database (lead: Joshua Gomez)
 
 This database stores vulnerabilities and exploit scripts. It includes models (see the [code](models.py)) using the  *sqlalchemy* ORM to provide an interface, and unit tests to make sure that it all works (see the [code](testse.py)). For more information, see the directory [data](data/).
 
-#### Jonathan Chang
+#### Executor (lead: Jonathan Chang)
 
 The executor and interceptor runs scripts to exploit services and reset incoming connections respectively. For more information, see the directory [executor](executor/).
 
-#### Michael Kotovsky
+#### Logger (lead: Michael Kotovsky)
 
 The logger, configurable with *Berkeley Packet Filter (BPF)* syntax generates Wireshark .pcap files on demand. For more information, see the directory [capture](capture/).
 
-#### Kumar Raj
+#### Firewall (lead: Kumar Raj)
 
 The firewall monitors incoming TCP requests and sends a reset flag whenever any keywords on its black list are encountered. For more information, see the directory [firewall](firewall/).
 
-#### Mehran Tajbakhsh
+#### Analyzer (lead: Mehran Tajbakhsh)
 
 The analyzer pattern matches for flags in the bodies of incoming TCP requests, and could be expanded for more functionality (see the [code](analyzer.py)). A list of useful tools during the competition was also compiled. For more information, see the directory [doc](docs/).
 
-#### Jonathan Ong
+#### Encryption & Patching Checklists (lead: Jonathan Ong)
 
-These are encryption snippets written in C, PHP and Python, so that we could setup the encryption patch as quickly as possible. For more information, see the directory [encryption snippets](encryption%20snippets).
-
-In addition, a [comprehensive checklist](https://docs.google.com/document/d/13cRbKB0WiuiLUDPpQ-4POr7_HJplsGUN54HbSIjyc6Y/edit?usp=sharing) was maintained.
+These are encryption snippets written in C, PHP and Python, so that we could setup the encryption patch as quickly as possible. For more information, see the directory [encryption snippets](encryption%20snippets). The patching [checklist](https://docs.google.com/document/d/13cRbKB0WiuiLUDPpQ-4POr7_HJplsGUN54HbSIjyc6Y/edit?usp=sharing) was developed to help us complete our setup thoroughly and to identify common vulnerabilities during the competition.
 
 ### Developer Setup
 
