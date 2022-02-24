@@ -4,6 +4,8 @@
 
 CLAMP was developed as the final project for ASU's CSE545 Software Security, as a set of tools to more effectively play in the class CTF competition. CLAMP stands for *CTF Logger Analyzer Mimicker Patcher*, the parts that were originally conceived to be in the project. However, since the short time frame of the course precluded dependencies between the parts, and since the analyzer and mimicker depended on having an interface to the logger and sample *pcap* files similar to actual CTF attacks, we opted to replace these parts with a firewall and encryption scripts that could be used to patch services.
 
+For a flow diagram of the entire project, see [flow_diagram.md](flow_diagram.md). *Warning*: Github's display of the mermaid format diagram is a bit buggy. you may need to click on a different browser tab and then click back on the Github tab again to see the image render correctly.
+
 ### The Elements
 
 CLAMP consist of the following elements, organized by the member of the team that authored them. Despite varying contributions to code, we'd stress that each member provided equally valuable input throughout the project cycle, much of which is in between the lines of code.
