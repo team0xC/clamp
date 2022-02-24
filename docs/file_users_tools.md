@@ -38,25 +38,25 @@ Proc file system (procfs) is virtual file system created on fly when system boot
 
 >find /proc -name comm -exec cat "{}" \; 2>/dev/null |sort -u    __(Sorted list of running processes)__
 
->ls -alR /proc/*/exe 2> /dev/null |  grep deleted       __(Deleted binaries still running)__
+>ls -alR /proc/\*/exe 2> /dev/null |  grep deleted       __(Deleted binaries still running)__
 
 >ls -al /proc/<PID>/exe      __(Real process path)__
 
 > strings /proc/<PID>/environ    __(Process environment)__
 
->ls -alR /proc/*/cwd      __(Process working directory)__
+>ls -alR /proc/\*/cwd      __(Process working directory)__
 
->ls -alR /proc/*/cwd 2> /dev/null | grep tmp   __(Process running from tmp folder)__
+>ls -alR /proc/\*/cwd 2> /dev/null | grep tmp   __(Process running from tmp folder)__
 
->ls -alR /proc/*/cwd 2> /dev/null | grep dev   __(Process running from dev folder)__
+>ls -alR /proc/\*/cwd 2> /dev/null | grep dev   __(Process running from dev folder)__
 
 # Users Investigation
 
 >find / -name authorized_keys      (Find all ssh authorized_keys files)
 
->find / -name .*history       __(History files for users)__
+>find / -name .\*history       __(History files for users)__
 
->ls -alR / 2> /dev/null | grep .*history |  grep null     __(History files linked to /dev/null)__
+>ls -alR / 2> /dev/null | grep .\*history |  grep null     __(History files linked to /dev/null)__
 
 >grep ":0:" /etc/passwd      __(Look for UID/ 0/ GID 0)__
 

@@ -82,7 +82,7 @@ __Calculate and display high-level summary statistics for an input pcap file__
 
 >$ capinfos -A -T infile2.pcap
 
->$ capinfos -A *.pcap
+>$ capinfos -A \*.pcap
 
 ### ngrep
 
