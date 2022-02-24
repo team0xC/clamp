@@ -1,26 +1,39 @@
 # CLAMP Logger module
 
 Configuration changes, including users, locations and other details can be found by editing
-	./capture/capture.cfg
+
+```bash
+./capture/capture.cfg
+```
 
 ## To Install utilities (via apt), services and crontab (as root)
-	./capture/capture.install.asroot
+
+```bash
+./capture/capture.install.asroot
+```
 
 Once installed, the service (default name: clamp-capture) can be stopped/started via
 
-	service clamp-capture start
-	service clamp-capture stop
-	service clamp-capture status
+```bash
+service clamp-capture start
+service clamp-capture stop
+service clamp-capture status
+```
 
 Scripts can also be invoked using /etc/init.d/clamp-capture
 
 ### If packet capture fails to stop
 Invoke as root:
 
+```bash
 	./capture/capture.kill
+```
 
 ## To Uninstall
-	./capture/capture.uninstall.asroot
+
+```bash
+./capture/capture.uninstall.asroot
+```
 
 Cleanup users/groups as necessary. By default the clamp user is created and added to the wireshark group
 

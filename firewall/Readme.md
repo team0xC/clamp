@@ -4,7 +4,7 @@ This is a firewall designed for PCTF game. It kills TCP requests to specific ser
 
 ### Defining Blacklist Keywords
 Blacklist keywords are defined in a JSON file at location [proj_path](resources/bl_keywords.json) (sample below)
-```
+```python
 {"*": ["/", ";", "&", "|", "`", "cat", "bin", "bash", "more", "less", "opt", "ictf", "services"],
   "exclusion": {
     "10001": ["/",";", "&","|", "`"],
@@ -19,7 +19,7 @@ Blacklist keywords are defined in a JSON file at location [proj_path](resources/
 
 ### Defining Services
 Listening service ports are defined in a JSON file at location [proj_path](resources/services.json) (sample below)
-```
+```python
 {
   "simplecalc": ["tcp","10001"],
   "simplecalc2": ["tcp","10002"]
@@ -31,27 +31,35 @@ where keys are service name and values are listed with protocol and service port
 
 Summaries can be pulled from the Game VM to Local machine for analysis using 
 
-```scp -i ~/.ssh/[rsa_key_file] -r [game_user]@[vm_host_ip/name]:[proj_path]/firewall/summary_logs  /path/to/local/machine/pctf/summary_logs```
+```bash
+scp -i ~/.ssh/[rsa_key_file] -r [game_user]@[vm_host_ip/name]:[proj_path]/firewall/summary_logs  /path/to/local/machine/pctf/summary_logs
+```
 
 ### Starting The Application
 
 The following commands start the application. First, we must give execution permission to the application.
 
-```sudo chmod +x <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"```
-
+```bash
+sudo chmod +x <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"
+```
 
 Next, we start a cron job to schedule execution for every hour.
 
-```sudo crontab -e```
-```*/1 * * * * <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"```
+```bash
+sudo crontab -e
+*/1 * * * * <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"
+```
 
 ### Adding Network Delay
 
 A temporary network delay could be useful during key events, such as when a flag is about to be retrieved by an exploit. The network delay would allow the reset to be sent before the flag. The following command induces such a delay for a second,
 
-```sudo tc qdisc add dev [interface] root netem delay 1000ms```
+```bash
+sudo tc qdisc add dev [interface] root netem delay 1000ms
+```
 
 And to remove the delay,
 
-```sudo tc qdisc del dev [interface] root```
-
+```bash
+sudo tc qdisc del dev [interface] root
+```

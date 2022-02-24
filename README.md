@@ -10,7 +10,7 @@ CLAMP consist of the following elements, organized by the member of the team tha
 
 ### Joshua Gomez
 
-This database stores vulnerabilities and exploit scripts. It includes models (see the [code](models.py)) using the  *sqlalchemy* ORM to provide an interface. For more information, see the directory [data](data/).
+This database stores vulnerabilities and exploit scripts. It includes models (see the [code](models.py)) using the  *sqlalchemy* ORM to provide an interface, and unit tests to make sure that it all works (see the [code](testse.py)). For more information, see the directory [data](data/).
 
 ### Jonathan Chang
 
@@ -62,6 +62,7 @@ Tests are run with Python's standard testing package `unittest`.
 * Redis 6.2 - [https://redis.io/documentation](https://redis.io/documentation)
 * Scapy 2.4.5 - [https://scapy.readthedocs.io/en/latest/](https://scapy.readthedocs.io/en/latest/)
 * SQL Alchemy 1.4 - [https://docs.sqlalchemy.org/en/14/intro.html#installation](https://docs.sqlalchemy.org/en/14/intro.html#installation)
+* SQLite 3 - [https://www.sqlite.org/docs.html](https://www.sqlite.org/docs.html)
 * SWPAG Client 0.3.7 - [https://pypi.org/project/swpag-client/](https://pypi.org/project/swpag-client/)
 
 ## Authors
