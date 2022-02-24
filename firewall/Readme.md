@@ -1,13 +1,9 @@
 # PCTF Firewall
 
-This is a firewall designed for PCTF game, it kills all the IP connections coming to defined specific service ports 
+This is a firewall designed for PCTF game. It kills TCP requests to specific service ports with data packets containing keywords from a defined set in a blacklist. It also acts as a monitor to capture protocol and port specific traffic to generate a summary for manual analysis.
 
-with data packets containing defined set of blacklisted keywords. It also acts as a monitor to capture protocol and port
-
-specific traffic to generate summary for manual analysis.
-
-### Define Blacklist Keywords
-blacklist keywords are defined in a JSON file at location [proj_path]/firewall/resources/bl_keywords.json(sample below)
+### Defining Blacklist Keywords
+Blacklist keywords are defined in a JSON file at location [proj_path](resources/bl_keywords.json) (sample below)
 ```
 {"*": ["/", ";", "&", "|", "`", "cat", "bin", "bash", "more", "less", "opt", "ictf", "services"],
   "exclusion": {
@@ -19,34 +15,43 @@ blacklist keywords are defined in a JSON file at location [proj_path]/firewall/r
   }
 }
 ```
-"*" keywords will be applied to all the services ports and per service based exclusion can be defined 
+"\*" keywords are applied to all the services ports. Particular keywords could be excluded per service, defined with the service port as key. The list of keywords to exclude are the values. In the example above, the firewall only blocks requests containing `["cat", "bin", "bash", "more", "less", "opt", "ictf", "services"]` to the service running on port 10001.
 
-with "service" port as key and exclusion as list of keywords which will be excluded from "*". 
-
-Here in the above example for service running at port 10001 only ["cat", "bin", "bash", "more", "less", "opt", "ictf", "services"]
-
-### Define Services
-Listening service ports are defined in a JSON file at location [proj_path]/firewall/resources/services.json(sample below)
+### Defining Services
+Listening service ports are defined in a JSON file at location [proj_path](resources/services.json) (sample below)
 ```
 {
   "simplecalc": ["tcp","10001"],
   "simplecalc2": ["tcp","10002"]
 }
 ```
-where keys are service name and values are list with protocol and service port
+where keys are service name and values are listed with protocol and service port.
 
-### Pull summaries from the Game VM to Local machine for analysis
+### Pulling Summaries 
 
-scp -i ~/.ssh/[rsa_key_file] -r [game_user]@[vm_host_ip/name]:[proj_path]/firewall/summary_logs  /path/to/local/machine/pctf/summary_logs
+Summaries can be pulled from the Game VM to Local machine for analysis using 
 
-### Setup the Application
-sudo chmod +x <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"
+```scp -i ~/.ssh/[rsa_key_file] -r [game_user]@[vm_host_ip/name]:[proj_path]/firewall/summary_logs  /path/to/local/machine/pctf/summary_logs```
 
-### sudo crontab -e
-*/1 * * * * <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"
+### Starting The Application
 
-### Add Network Delay
-sudo tc qdisc del dev [interface] root --> to remove delay
+The following commands start the application. First, we must give execution permission to the application.
 
-sudo tc qdisc add dev [interface] root netem delay 1000ms --> to induce delay
+```sudo chmod +x <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"```
+
+
+Next, we start a cron job to schedule execution for every hour.
+
+```sudo crontab -e```
+```*/1 * * * * <proj_path>/firewall/startme.sh --interface="[interface]" --prj_path="[proj_path]/firewall"```
+
+### Adding Network Delay
+
+A temporary network delay could be useful during key events, such as when a flag is about to be retrieved by an exploit. The network delay would allow the reset to be sent before the flag. The following command induces such a delay for a second,
+
+```sudo tc qdisc add dev [interface] root netem delay 1000ms```
+
+And to remove the delay,
+
+```sudo tc qdisc del dev [interface] root```
 
