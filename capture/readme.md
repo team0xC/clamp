@@ -26,7 +26,7 @@ Scripts can also be invoked using /etc/init.d/clamp-capture
 Invoke as root:
 
 ```bash
-	./capture/capture.kill
+./capture/capture.kill
 ```
 
 ## To Uninstall
