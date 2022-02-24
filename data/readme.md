@@ -1,6 +1,6 @@
 # Database
 
-The file [models.py](../models.py) define and initialize an `sqlite3` database through the `sqlalchemy` ORM. Three tables are created: Service, Vuln, and Exploit. Each service has potentially many vulnerabilities, and each vulnerability and service have potentially many exploits, in many-to-one relationships.
+The central database tracks the identification and patching of vulnerabilities as well as track the success of exploit scripts. Three tables are created: Service, Vuln, and Exploit. Each service has potentially many vulnerabilities, and each vulnerability and service have potentially many exploits, in many-to-one relationships.
 
 ## Entity Relationship Diagram for CLAMP DB
 
@@ -30,6 +30,13 @@ erDiagram
     int service
   }
 ``` 
+
+## Files
+
+- The inital schema design was created using the standard SQL Data Definition Language. See [db_schema.ddl](db_schema.ddl).
+- The [models.py](../models.py) file (in the root dir) defines and initializes a `sqlite3` database using the `sqlalchemy` ORM.
+- The actual SQLite3 database is in the [pctf.db](pctf.db) file.
+- Unit tests for the models can be found in the [tests.py](../tests.py) file (in the root dir).
 
 ### Usage
 
