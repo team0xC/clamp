@@ -11,6 +11,8 @@ Two primary acitivites in a CTF run periodically: stealing flags through attacks
   - Constantly (every half second)
   - Every 5 seconds
 
+For [usage](#usage), scroll down.
+
 ### Executor
 
 First, there is a service that monitors the flag directory per each service and reports when new files are created. The executor starts a new thread at the start of every tick immediately after the first flag update (which it presumes to be the script bot setting a new flag). It then retrieves all the targets from services that are still up through the SWPAG client, and executes scripts targeted to each service against every team. The scripts are dynamically loaded twice per tick: half way through, and near the end, just in time to be run next round. After running, it submits the flag in batches of 100 flags or less, to avoid any 'too_many_incorrect' problems, and sorts the scripts by success rate. Finally, it prioritizes successful scripts in the next tick.
@@ -124,3 +126,11 @@ Details: Attack said 'win' in script. Hah!
 ```
 
 It would be easy to see at a glance the reason for termination.
+
+### Usage
+
+To run, use `sudo python3 ./event_loop.py`. `sudo` is necessary for `socket` and scapy `sniff()` access. Useful directories can be found in `interceptor_files/shared_resources.py`.
+
+### Author
+
+**Jonathan Chang** - [jachang820](https://github.com/jachang820)

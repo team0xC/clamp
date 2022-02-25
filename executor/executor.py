@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# CSE545 Spring A - Team 12 (team0xC)
+# https://github.com/team0xC/clamp
+
 import time
 import os 
 from common import game_client, team

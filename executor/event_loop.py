@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# CSE545 Spring A - Team 12 (team0xC)
+# https://github.com/team0xC/clamp
+
 """
 Main event loop to query swpag_client for new ticks, and run various functions
 from the executor and interceptor at various intervals:

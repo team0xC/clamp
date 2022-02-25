@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# CSE545 Spring A - Team 12 (team0xC)
+# https://github.com/team0xC/clamp
+
 from scapy.all import *
 import socket
 from collections import namedtuple
