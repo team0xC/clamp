@@ -61,7 +61,7 @@ This can be prepared in advance without knowing specific vulnerabilities, becaus
     __   ('w')~ meow.gif __________
    /  \ <(cat flagID)   |  ______  | ('where is flagID??')  wSfnFc_QM9u5.bak [MeleW]
  _|,  ,|_               | |SERVER| | ,'                     3dw4Rd_WhPt4.bak [b3B0p]
-|  l33t  |              | |______| |                        Db173h_d744s.bak [W75nk]
+|  l33t  |              | |______| |                        Db173h_d744s.bak [W75nX]
  (hacker)    ('huh?')>  |__________|                        ip2Bd3_fmut3.bak [61T5x]       
                            ======                           
 ```
@@ -73,8 +73,8 @@ This can be prepared in advance without knowing specific vulnerabilities, becaus
     __   ( *~)           __________
    /  \ <(cat *)        |  ______  |                        wSfnFc_QM9u5.bak [MeleW]
  _|,  ,|_    (MeleW)    | |SERVER| |                        3dw4Rd_WhPt4.bak [b3B0p]
-|  l33t  |   (b3B0p)    | |______| |                        Db173h_d744s.bak [W75nk]
- (hacker)    (W75nk)>   |__________|                        ip2Bd3_fmut3.bak [61T5x]                         
+|  l33t  |   (b3B0p)    | |______| |                        Db173h_d744s.bak [W75nX]
+ (hacker)    (W75nX)>   |__________|                        ip2Bd3_fmut3.bak [61T5x]                         
              (6175s)       ======                           
 ```
 
@@ -85,7 +85,7 @@ because the server doesn't know and neither do we! Neither the unencrypted flag 
     __                   __________      __   (wut??)
    /  \ <(/bin/sh)      |  ______  |    /  \ ,'             wSfnFc_QM9u5.bak [MeleW]                    
  _|,  ,|_               | |SERVER| |  _|,  ,|_              3dw4Rd_WhPt4.bak [b3B0p]  (i dunno either)> [un:admin]
-|  l33t  |              | |______| | |  l33t  |             Db173h_d744s.bak [W75nk]                    [pw:admin]
+|  l33t  |              | |______| | |  l33t  |             Db173h_d744s.bak [W75nX]                    [pw:admin]
  (hacker)               |__________| (hacker in the shell)  ip2Bd3_fmut3.bak [61T5x]                   (the $ADMIN$)
                            ======                           
 ```
@@ -97,7 +97,7 @@ The server only verifies the login info against the encrypted login info and has
 TT,.-=*^^-._. <(flagID)  __________  
 || FLAG BOT/   (FLGpw)  |  ______  | (vvv(flagID,FLGpw)->)  wSfnFc_QM9u5.bak [MeleW]                    
 ||BEEP BOOP|            | |  \/  | | ,'                     3dw4Rd_WhPt4.bak [b3B0p]  
-||.-=*^^-.__\  (FLGfl)> | |__/\__| | (<-vvv(MeleW,FLGpw))   Db173h_d744s.bak [w75nk]             
+||.-=*^^-.__\  (FLGfl)> | |__/\__| | (<-vvv(MeleW,FLGpw))   Db173h_d744s.bak [w75nX]             
 ||                      |__________| ~'                     ip2Bd3_fmut3.bak [61T5x]
       ~*¡CORRECT!*~        ======                           
 ```
