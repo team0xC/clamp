@@ -1,7 +1,7 @@
 # vvv Documentation
 
 `vvv.py` is the primary file and contains the algorithm that was adapted to other languages
-below is copied the function description for `vvv()` in `vvv.py`.
+below is adapted from the documentation `vvv()` in `vvv.py`.
 
 ### Design Criteria
 
@@ -191,7 +191,7 @@ A single advancing rotor does almost the same thing as multiple rotors individua
 
 #### Caesar cipher
 
-A substitution cipher that offsets the character by 3, althouh tt is often used for cipher disks that use any offset. Flexibility is offers because the offset can be varied and the cipher disk loops around to the start. Commonly used as ROT13.
+A substitution cipher that offsets the character by 3, althouh tt is often used for cipher disks that use any offset. Flexibility is offers because the offset can be varied and the cipher disk loops around to the start. Commonly used as ROT13 which is the involutory variant.
 
     ABCDEFGHIJLKMNOPQRSTUVWXYZ
     DEFGHIJKLMNOPQRSTUVWXYZABC
