@@ -12,7 +12,7 @@ CLAMP consist of the following elements, organized by the member of the team tha
 
 #### Database (lead: Joshua Gomez)
 
-This database stores vulnerabilities and exploit scripts. It includes models (see the [code](models.py)) using the  *sqlalchemy* ORM to provide an interface, and unit tests to make sure that it all works (see the [code](testse.py)). For more information, see the directory [data](data/).
+This database stores vulnerabilities and exploit scripts. It includes models (see the [code](models.py)) using the  *sqlalchemy* ORM to provide an interface, and unit tests to make sure that it all works (see the [code](tests.py)). For more information, see the directory [data](data/).
 
 #### Executor (lead: Jonathan Chang)
 
