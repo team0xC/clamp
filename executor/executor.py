@@ -19,25 +19,30 @@ class Executor:
 
 
   def load_exploits(self):
+    """
+    Load exploit scripts, saving each module object in memory.
+    Add entry to successes to figure effectiveness of each script.
+    """
     files = self.res.read_script_files(self.paths.exploit_scripts)
     self.modules = self.res.reload_scripts(
-      self.exploit_scripts_folder, files, self.modules)
+      self.res.exploit_scripts_folder, files, self.modules)
     for name in files:
-      if name not in successes:
+      if name not in self.successes:
         self.successes[name] = 0
 
       # self.add_exploit_to_db(name)
 
 
   def run_all_exploits(self):
-    # e.g. {<service_id>: [<team_id>, ...], ...}
-    target_services = services_up()
+    """
+    Run all exploit scripts. Log rate of successes.
+    """
 
-    # Q: Why exploit then team?; A: Allows us to stop running exploits when flag captured if you want to hide exploits
-    # Alternatively, queue exploits for each team, don't fix what isn't broken and only change exploits for a given team (and only that team) if it stops working
+    # e.g. {<service_id>: [<team_id>, ...], ...}
+    target_services = self.services_up()
 
     # process exploit with most successes first
-    exploit_list = self.sort_exploits(self.successes) 
+    exploit_list = self.sort_exploits() 
     for name in exploit_list:
       module = self.modules[name]
       exploit = self.res.initialize_script(module)
@@ -55,18 +60,26 @@ class Executor:
         except Exception as e:
           print(e)
 
+      # Submit in batches of 100 to prevent 'too_many_incorrect' error
       batches = math.ceil(len(flags) / 100)
       for i in range(batches):
         submission = flags[i * 100:(i + 1) * 100]
         results = team.submit_flag(flags)
-        self.successes[exploit_name] += self.count_correct(results)
+        self.successes[name] += self.count_correct(results)
+    print(self.successes)
 
 
-  # Create dictionary of {<service_id>: [<team_id>, ...]...}
-  # of all the services that are still up
   def services_up(self):
+    """
+    Create dictionary of {<service_id>: [<team_id>, ...]...}
+    of all the services that are still up.
+
+    :returns:   Dictionary of services and the teams that still have them up
+    :rtype:     dict
+    """
     service_list = {}
-    team_services = team.get_game_status()['service_states']
+    game_status = team.get_game_status()
+    team_services = game_status['service_states']
     for team_id, services in team_services.items():
       for service_id, service in services.items():
         if service['service_state'] == 'up':
@@ -78,10 +91,18 @@ class Executor:
             service_list[service_id] = [team_id]
       return service_list
 
-  # Sort exploits by number of successes achieved
+
   def sort_exploits(self):
+    """
+    Sort exploits by number of successes achieved, in order to run most 
+    effective scripts first.
+
+    :returns:   Sorted list of exploit names
+    :rtype:     list(string)
+    """
     exploit_list = list(self.successes.items())
     exploit_list.sort(key=lambda x: x[1], reverse=True)
+    exploit_list = [name for name, count in exploit_list]
     return exploit_list
 
 
@@ -105,8 +126,17 @@ class Executor:
             service_id = exploit_obj.service.id)
           session.add(new_exploit)
 
-  # Count number of correct values returned after submitting flags
+
   def count_correct(self, lst):
+    """
+    Count the number of flags marked correct in a recent submission.
+
+    :param      lst:  List that's returned from a flag submission
+    :type       lst:  list
+    
+    :returns:   Number of correct flags submitted
+    :rtype:     integer
+    """
     count = 0
     for value in lst:
       if value == 'correct':

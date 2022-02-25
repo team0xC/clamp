@@ -1,6 +1,7 @@
 import string
 from common import game_client
 
+# This string will be used to instantiate the class.
 class_name = 'SampleResetScript'
 
 class SampleReseScript: 
@@ -8,14 +9,18 @@ class SampleReseScript:
   target_service = "simplecalc"
 
   def __init__(self):
+    # Retrieve the ServiceRecord object to get service
+    # (name, id, port)
     self.service = game_client.service(target_service)
 
   def __str__(self):
+    # For reporting purposes
     return "Sample reset template"
 
-  # Return: Reason for resetting TCP will be written at the bottom of
-  #         the log files.
   def message(self):
+    """
+    Reason for resetting TCP will be written at the bottom of the log files.
+    """
     msg = {}
     msg['summary'] = 'INVALID REGISTERS'
     msg['details'] = "Script contains in valid register formatting."
@@ -27,7 +32,19 @@ class SampleReseScript:
   #   (our team's attack scripts are ignored and will never be reset)
   # Return: True to reset TCP, False for no action
   def run(self, load, direction):
-    # Assume simplecalc
+    """
+    Pattern match for text in the payload of a TCP request or response packet
+    in order to check for something in the attack, or perhaps a flag in the
+    response of an attack.
+
+    :param      load:  Payload of a packet
+    :type       identity:  string
+    :param      direction:  Either "incoming" or "outgoing"
+    :type       identity:  string
+    
+    :returns:   True if a reset flag should be sent back to source
+    :rtype:     boolean
+    """
     if '[]' in load:
       return True
     for i in range(len(load) - 1):

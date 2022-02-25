@@ -1,5 +1,7 @@
-import swpag_client
+#import swpag_client
 from collections import namedtuple
+from types import SimpleNamespace
+import time
 
 
 class GameClient:
@@ -12,9 +14,13 @@ class GameClient:
   def __init__(self):
     if self._game_url[:7] != 'http://':
       self._game_url = 'http://' + self._game_url
-    self.team = swpag_client.Team(self._game_url, self._flag_token_id)
     self._init_service_list()
     self._init_team_hosts()
+    self.start_time = int(time.time())
+
+    self.team = SimpleNamespace()
+    self.team.submit_flag = GameClient.submit_flag
+    self.team.get_game_status = GameClient.get_game_status
 
   def _init_service_list(self):
     """
@@ -27,15 +33,13 @@ class GameClient:
       ...
     }
     """
-    self.services = []
-    unique_services = set()
-    for service in self.team.get_service_list():
-      name = service['service_name']
-      id_num = int(service['service_id'])
-      port = int(service['port'])
-      if name not in unique_services:
-        unique_services.add(name)
-        self.services.append(self.ServiceRecord(name, id_num, port))
+    self.services = [
+      self.ServiceRecord("backup", 1, 10001),
+      self.ServiceRecord("saywhat", 2, 10002),
+      self.ServiceRecord("flaskids", 3, 10003),
+      self.ServiceRecord("sampleak", 4, 10004)
+    ]
+    
 
   def _init_team_hosts(self):
     """
@@ -48,8 +52,18 @@ class GameClient:
       ...
     }
     """
+    t = [
+      {'id': '1', 'name': 'D3bugZ0mbies'},
+      {'id': '2', 'name': 'Scaramouche'},
+      {'id': '3', 'name': 'PhlagPhishing'},
+      {'id': '4', 'name': 'Team 4'},
+      {'id': '5', 'name': 'ElectroBandits'},
+      {'id': '6', 'name': 'ASCii PWners'},
+      {'id': '7', 'name': 't34m7'},
+      {'id': '8', 'name': 'lostpointers'}] 
+
     self.teams = []
-    for team in self.team.get_team_list():
+    for team in t:
       hostname = 'team' + team['id']
       self.teams.append(self.TeamRecord(int(team['id']), team['name'], hostname))
 
@@ -76,10 +90,37 @@ class GameClient:
 
   # more compact way of getting tick info
   def tick_info(self):
-    team.get_tick_info()
-    tick_num = int(tick_info['tick_id'])
-    seconds_left = int(tick_info['approximate_seconds_left'])
+    tick_length = 100
+    current_time = int(time.time())
+    tick_num = (current_time - self.start_time) // tick_length
+    seconds_left = tick_length - ((current_time - self.start_time) % tick_length)
     return (tick_num, seconds_left)
+
+  def submit_flag(flags):
+    results = []
+    for flag in flags:
+      if flag == 'FLGd5KDBXRcLh7KU':
+        results.append('correct')
+      else:
+        results.append('incorrect')
+    return results
+
+  def get_game_status():
+
+    return {'service_states': {
+      '1': {
+        '1': {'service_state': 'up'},
+        '2': {'service_state': 'down'},
+        '3': {'service_state': 'up'},
+        '4': {'service_state': 'up'}
+        },
+      '2': {
+        '1': {'service_state': 'up'},
+        '2': {'service_state': 'up'},
+        '3': {'service_state': 'up'},
+        '4': {'service_state': 'up'}
+      }
+    }}
 
 game_client = GameClient()
 team = game_client.team
