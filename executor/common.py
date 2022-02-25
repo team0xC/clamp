@@ -32,6 +32,9 @@ class GameClient:
     """
     self.services = []
     unique_services = set()
+    service_list = self.team.get_service_list()
+    if type(service_list) == dict:
+      service_list = list(service_list.values())
     for service in self.team.get_service_list():
       name = service['service_name']
       id_num = int(service['service_id'])
@@ -52,6 +55,9 @@ class GameClient:
     }
     """
     self.teams = []
+    team_list = self.team.get_team_list()
+    if type(team_list) == dict:
+      team_list = list(team_list.values())
     for team in self.team.get_team_list():
       hostname = 'team' + team['id']
       self.teams.append(self.TeamRecord(int(team['id']), team['name'], hostname))
