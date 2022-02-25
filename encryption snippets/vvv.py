@@ -54,7 +54,7 @@ Fig 1. Because the flagIDs are encrypted the files can not be found by flagID
     __   ('w')~ meow.gif __________
    /  \ <(cat flagID)   |  ______  | ('where is flagID??')  wSfnFc_QM9u5.bak [MeleW]
  _|,  ,|_               | |SERVER| | ,'                     3dw4Rd_WhPt4.bak [b3B0p]
-|  l33t  |              | |______| |                        Db173h_d744s.bak [W75nk]
+|  l33t  |              | |______| |                        Db173h_d744s.bak [W75nX]
  (hacker)    ('huh?')>  |__________|                        ip2Bd3_fmut3.bak [61T5x]       
                            ======                           
 
@@ -63,8 +63,8 @@ Fig 2. Even if the hacker gets access to flags, they can not be mass submitted b
     __   ( *~)           __________
    /  \ <(cat *)        |  ______  |                        wSfnFc_QM9u5.bak [MeleW]
  _|,  ,|_    (MeleW)    | |SERVER| |                        3dw4Rd_WhPt4.bak [b3B0p]
-|  l33t  |   (b3B0p)    | |______| |                        Db173h_d744s.bak [W75nk]
- (hacker)    (W75nk)>   |__________|                        ip2Bd3_fmut3.bak [61T5x]                         
+|  l33t  |   (b3B0p)    | |______| |                        Db173h_d744s.bak [W75nX]
+ (hacker)    (W75nX)>   |__________|                        ip2Bd3_fmut3.bak [61T5x]                         
              (6175s)       ======                           
 
 Fig 3. Even if the hacker has full shell access and can see what we see, s/he still won't know what the flag is...
@@ -73,7 +73,7 @@ Neither the unencrypted flag or flagID is on the server, nor is the key to unenc
     __                   __________      __   (wut??)
    /  \ <(shell)        |  ______  |    /  \ ,'             wSfnFc_QM9u5.bak [MeleW]                    
  _|,  ,|_               | |SERVER| |  _|,  ,|_              3dw4Rd_WhPt4.bak [b3B0p]  (i dunno either)> [un:admin]
-|  l33t  |              | |______| | |  l33t  |             Db173h_d744s.bak [W75nk]                    [pw:admin]
+|  l33t  |              | |______| | |  l33t  |             Db173h_d744s.bak [W75nX]                    [pw:admin]
  (hacker)               |__________| (hacker in the shell)  ip2Bd3_fmut3.bak [61T5x]                   (the $ADMIN$)
                            ======                           
 
@@ -83,7 +83,7 @@ The server only verifies the login info against the encrypted login info and has
 TT,.-=*^^-._. <(flagID)  __________  
 || FLAG BOT/   (FLGpw)  |  ______  | (vvv(flagID,FLGpw)->)  wSfnFc_QM9u5.bak [MeleW]                    
 ||BEEP BOOP|            | |  \/  | | ,'                     3dw4Rd_WhPt4.bak [b3B0p]  
-||.-=*^^-.__\  (FLGfl)> | |__/\__| | (<-vvv(MeleW,FLGpw))   Db173h_d744s.bak [w75nk]             
+||.-=*^^-.__\  (FLGfl)> | |__/\__| | (<-vvv(MeleW,FLGpw))   Db173h_d744s.bak [W75nX]             
 ||                      |__________| ~'                     ip2Bd3_fmut3.bak [61T5x]
       ~*¡CORRECT!*~        ======                           
 
