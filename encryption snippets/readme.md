@@ -83,7 +83,7 @@ because the server doesn't know and neither do we! Neither the unencrypted flag 
 
 ```
     __                   __________      __   (wut??)
-   /  \ <(shell)        |  ______  |    /  \ ,'             wSfnFc_QM9u5.bak [MeleW]                    
+   /  \ <(/bin/sh)      |  ______  |    /  \ ,'             wSfnFc_QM9u5.bak [MeleW]                    
  _|,  ,|_               | |SERVER| |  _|,  ,|_              3dw4Rd_WhPt4.bak [b3B0p]  (i dunno either)> [un:admin]
 |  l33t  |              | |______| | |  l33t  |             Db173h_d744s.bak [W75nk]                    [pw:admin]
  (hacker)               |__________| (hacker in the shell)  ip2Bd3_fmut3.bak [61T5x]                   (the $ADMIN$)
