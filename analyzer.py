@@ -17,6 +17,17 @@ import re
 # IP address of the teaminterface    (myIP)
 # Flag Token                         (myToken)
 
+# My notes during PCTF:
+# In CTF competition, time is our main challenge.
+# Scapy didn't have enough performance to deal with real time traffic analysis.
+# Scapy is very powerful and handy tool that can manipulate network traffic at a very low level and allow us to use protocol stack and combine them
+# We used pyShark in our firewall module and we got better performance.
+# I believed that if we capture traffic with pyShark and process them with Scapy, we can get better performance.
+# Analyzer module must use a predefind dictionary of attack vector, and also it must be equiped an algorithm to detect new attasck vector and add them to dictionary.
+# Analyzer must be able to gatther enough information from vulnerability to detect related CVE number or find suitable exploit from exploit-db.
+# Analyzer module must use deep learning algoeithm to detect and fin vulnerability patterns in captured traffic. 
+
+
 
 # General Functions
 class ProjectPCTF:
