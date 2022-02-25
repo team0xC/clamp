@@ -5,47 +5,65 @@ below is copied the function description for `vvv()` in `vvv.py`.
 
 ### Design Criteria
 
-1. Alphanumeric only (to limit errors when used in other programs)
-2. Requires a user provided key to encrypt/decrypt (which is not stored or known by the server)
-3. Output is identical in length to input (to limit errors when used in other programs)
-4. A single character change in the string to be encrypted causes a domino effect (no obvious ciphered "FLG")
-5. A single character change in the key causes a domino effect 
-6. The same function can be used to decrypt and encrypt
-7. Standardized behavior between languages in case services interact
-8. Even if the algorithm is known, it is impractical to attempt decryption because the key is required
-9. Require minimum external libraries
-10. Minimum size that meets the criteria (13 lines of code)
+#### Cryptographic:
+1. Requires a user provided key to encrypt/decrypt (which is not stored or known by the server) 
+2. Difficult to detect pattern (no obvious cipher of known substrings like "FLG")
+3. A single character change in the string to be encrypted causes a domino effect (no obvious ciphered "FLG")
+4. A single character change in the key causes a domino effect 
+5. Even if the algorithm is known, it is impractical to attempt decryption because the key is required
+
+#### String compatibility:
+6. String of arbitrary length as key
+7. Alphanumeric encryption only (to limit errors when used in other programs)
+8. Does not alter nonalphanumeric characters (in case they are used by the program)
+9. Output is identical in length to input (to limit errors when used in other programs)
+
+#### Patching compitibility: 
+10. The same function can be used to decrypt and encrypt
+11. Standardized behavior between languages in case services interact
+12. Require minimum external libraries
+13. Minimum size that meets the criteria (13 lines of code)
 
 ### Goals
 
-It is assumed that there are 3 pieces of information, which are sufficiently random.
-
+It is assumed that there are 3 pieces of information, which are sufficiently random other than the "FLG" prefix.
 - Username (provided by user)
 - Password (provided by user)
 - Contents (returned to user)
 
-The goal is to make it so all of these pieces of information are known only by the user, and are unknown by the server or any malicious party. The function that writes username, password and contents to file should be modified as well as the one for retrieval. The server never stores information as plaintext, and never saves any way to decrypt the files. Technically a hash may be used for Username and Password because these will always be provided by the bot, and only needs to be verified. The hacker only knows the unencrypted flagID and at best only only has access to encrypted data. The hacker will not even be able to idendity the encrypted flagID because the encryption key is the unknown password. Even if the hacker creates files to observe the enryption behavior or can study the algorithm, the encryption is much more difficult to crack than something like a ROT13 cipher.
+The goal is to make it so all of these pieces of information are known only by the user, and are unknown by the server or an attacker. 
 
-Even relative security is sufficient due to the opprotunity cost of trying to develop an exploit that only works on one team, only have to be more secure than other bikes on the bike rack. It is ideal that the hacker not have access to encrypted data or the shell in the first place, but this provides another line of defence even if exploits are patched and new ones are found. This approach can be planned even without knowing the specific vulnerabilities because it takes a generalized approach and offers protection even if analysis misses vulnerabilties.
-
-### Effects On The Three Pillars
-
+This encryption should be used in a way that ensures confideniality/integrity/availability:
 - **Confidentiality** - The identifying data and the confidential data is only ever saved encrypted.
-- **Integrity** - The encrypted data can be decrypted only when a key is present, but the integrity is preserved because it can be decrypted and strlen and punctuation are constant.
-- **Availability** - No change is made to the availability of encrypted data but the unencrypted data is only available when a key is present, so no modification of availability needs to be patched.
+- **Integrity** - Integrity is preserved because it can be decrypted and strlen and non-alphanumeric characters are unaltered.
+- **Availability** - Unencrypted data is available when a key is present, so it does not adversely affect availability
 
-### Detailed Explanation
+#### Service/server:
+The function that writes username, password and contents to file should be modified as well as the one for retrieval.
+The server never stores information as plaintext, and never saves any way to decrypt the files.
+Technically a hash may be used for Username/Password because these will always be provided by the bot, and only need to be verified.
+
+#### Hacker POV:
+The hacker only knows the unencrypted flagID and at best only only has access to encrypted data.
+The hacker will not even be able to identify the encrypted flagID because the encryption key is the unknown password.
+The hacker will have to spend time studying a non-standard encryption method.
+The hacker will have to expend a limited resource (time) on cracking encryption rather than other exploits with higher ROI.
+   
+This provides another line of defense on top of the standard exploit patching, and resists standard exploits that rely on plaintext.
+This can be prepared in advance without knowing specific vulnerabilities, because it tackles the general problem of plaintext.  
+
+### Illustrated Explanation for Dummies
 
 *Fig 1.* Because the flagIDs are encrypted the files can not be found by flagID.
 
 ```
           ^ ^
-    __   ('w')~ meow     __________
+    __   ('w')~ meow.gif __________
    /  \ <(cat flagID)   |  ______  | ('where is flagID??')  wSfnFc_QM9u5.bak [MeleW]
- _|,  ,|_               | |SERVER| | ,'                     1Ep8ui_8Vw2h.bak [m007y]
+ _|,  ,|_               | |SERVER| | ,'                     3dw4Rd_WhPt4.bak [b3B0p]
 |  l33t  |              | |______| |                        Db173h_d744s.bak [W75nk]
  (hacker)    ('huh?')>  |__________|                        ip2Bd3_fmut3.bak [61T5x]       
-                           ======                           3dw4Rd_WhPt4.bak [b3B0p]
+                           ======                           
 ```
 
 *Fig 2.* Even if the hacker gets access to flags, they can not be mass submitted because they are encrypted.
@@ -53,78 +71,68 @@ Even relative security is sufficient due to the opprotunity cost of trying to de
 ```
           ^ ^
     __   ( *~)           __________
-   /  \ <(cat*)         |  ______  |                        wSfnFc_QM9u5.bak [MeleW]
- _|,  ,|_    (MeleW)    | |SERVER| |                        1Ep8ui_8Vw2h.bak [m007y]
-|  l33t  |   (m007y)    | |______| |                        Db173h_d744s.bak [W75nk]
+   /  \ <(cat *)        |  ______  |                        wSfnFc_QM9u5.bak [MeleW]
+ _|,  ,|_    (MeleW)    | |SERVER| |                        3dw4Rd_WhPt4.bak [b3B0p]
+|  l33t  |   (b3B0p)    | |______| |                        Db173h_d744s.bak [W75nk]
  (hacker)    (W75nk)>   |__________|                        ip2Bd3_fmut3.bak [61T5x]                         
-             (6175s)       ======                           3dw4Rd_WhPt4.bak [b3B0p]
-             (b3B0p)
+             (6175s)       ======                           
 ```
 
-*Fig 3.* Even if the hacker has full shell access and can see what we see, s/he still won't know what the flag is... because the server doesn't know and neither do we! Neither the unencrypted flag or flagID is on the server, nor is the key to unencrypt them
+*Fig 3.* Even if the hacker has full shell access and can see what we see, s/he still won't know what the flag is... 
+because the server doesn't know and neither do we! Neither the unencrypted flag or flagID is on the server, nor is the key to unencrypt them
 
 ```
     __                   __________      __   (wut??)
    /  \ <(shell)        |  ______  |    /  \ ,'             wSfnFc_QM9u5.bak [MeleW]                    
- _|,  ,|_               | |SERVER| |  _|,  ,|_              1Ep8ui_8Vw2h.bak [m007y]  (i dunno either)> [un:admin]
+ _|,  ,|_               | |SERVER| |  _|,  ,|_              3dw4Rd_WhPt4.bak [b3B0p]  (i dunno either)> [un:admin]
 |  l33t  |              | |______| | |  l33t  |             Db173h_d744s.bak [W75nk]                    [pw:admin]
  (hacker)               |__________| (hacker in the shell)  ip2Bd3_fmut3.bak [61T5x]                   (the $ADMIN$)
-                           ======                           3dw4Rd_WhPt4.bak [b3B0p]
+                           ======                           
 ```
 
 *Fig 4.* Only the flag bot with both the unencrypted flagID and pw can access the file.
-The server only verifies the login info against the encrypted login info and has the key to decrypt the contents
+The server only verifies the login info against the encrypted login info and has the key to decrypt the contents.
 
 ```
 TT,.-=*^^-._. <(flagID)  __________  
-|| FLAG BOT/   (FLGpw)  |  ______  | ( flagID # FLGpw -> )  wSfnFc_QM9u5.bak [MeleW]                    
-||BEEP BOOP|            | |  \/  | | ,'                     1Ep8ui_8Vw2h.bak [m007y]  
-||.-=*^^-.__\  (FLGfl)> | |__/\__| | ( <- MeleW # FLGpw )   Db173h_d744s.bak [w75nk]             
+|| FLAG BOT/   (FLGpw)  |  ______  | (vvv(flagID,FLGpw)->)  wSfnFc_QM9u5.bak [MeleW]                    
+||BEEP BOOP|            | |  \/  | | ,'                     3dw4Rd_WhPt4.bak [b3B0p]  
+||.-=*^^-.__\  (FLGfl)> | |__/\__| | (<-vvv(MeleW,FLGpw))   Db173h_d744s.bak [w75nk]             
 ||                      |__________| ~'                     ip2Bd3_fmut3.bak [61T5x]
-      ~*¡CORRECT!*~        ======                           3dw4Rd_WhPt4.bak [b3B0p]
+      ~*¡CORRECT!*~        ======                           
 ```
 
-The function can be used to encrypt all data in a way that requires the key to be provided for decryption
+The function can be used to encrypt all data, such as passwords, usernames and file contents. 
+All of these 3 strings can be encrypted or used as a key without any major alterations to the serivce.
+The initial values for adv, pair_i and the advance rotor modulo can be altered to produce different results. 
+Additional rotors may be added, or rotors may be removed, at the risk of compromizing certain characteristics.
 
-This is done by taking the following steps:
-
-    username2file = vvv(username, password)
-    password2file = vvv(password, username)
-    contents2file = vvv(contents, password)
-
-The same process can be used for retrieval:
-
-    username2match = vvv(username, password)
-    password2match = vvv(password, username)
-    contents2send  = vvv(contents, password)
+It may be ideal to delete or overwrite the contents of old files, as well as make encrypted copies of old files. 
 
 A false flag can also be planted for each flagID:
-
     Filename: flagID_randomstring
     Contents: FLGrandomstring
-
-It may also be ideal to delete or overwrite the contents of old files. The initial values for adv, pair_i and the advance rotor modulo can be altered to produce different results. Additional rotors may be added, or rotors may be removed, at the risk of compromizing certain characteristics.
-
+    
 ### How It Works
 
 | Explanation | Code |
 | :--- | :--- |
-| Encrypts iterating one character at a time | (un_ord: ordinal username; char as int) |
-| Encodes character as an integer representation of alphanumeric | (ani: Alpha-numeric index offset; -1 is non-alphanumeric flag) |
-| If not alphanumeric then no change | (un_ord: ordinal username) |
-| The key is translated into a rotor stepped by increment to promote domino effect based on key | (pw[i%pw_l]: key rotor stepped by increment)  |
-| The key is translated into a rotor stepped by previous steps to be influenced by other variables including: index, prior character and prior key value | (pw[adv%pw_l]: key rotor stepped by prev advance) |     
-| The key has small set of advance offsets, non-key values are used so there are also non-key advances |  |
-| Index causes an advance to promote change with each character | (i: index of input string character) |
-| Index of the matched pair from the mirror reflector to promote domino effect based on previous char | (pair_i: index of matched character pair) 
-| Previous advance is also used so that all previous variable have aftereffects | (adv: prior advance value before reassignment) |
-| Advances the Caesar (shift cipher) rotor by the offset, modulo is used to emulate rotation | (...+adv)%62: 62 alphanumeric values, ensures 1-to-1 and onto function) |
-| Sends the input through the Caesar rotor | (un_ord-ani+adv: un_ord+ani is an index that corresponds to alphanumeric) |
-| Uses a mirror reflector to make it symmetrical | ((185-un_ord...)%62: unordered tuples {(0,61),(1,60),(2,59)...}; 185=61+62+62; tuples sum to 61, helps with negative differing modulo behaviors) |
-| Gets the a unique value for the unordered tuple for advance offset | (abs(un_ord+un_ord-61): pair_i as above; maintains encyption/decryption symmetry) |
-| Sends the input through the Caesar rotor in the reverse direction | (...-adv)%62: 62 alphanumeric values, ensures 1-to-1 and onto function) |
-| Encodes the character as ASCII | (un_ord: ordinal username) |
-| Adds to string | (out += chr(un_ord); converts int to chr) |
+| Encrypts iterating one character at a time | un_ord: ordinal username; char as int |
+| Encodes character as an integer representation of alphanumeric | ani: alphanumeric index offset; -1 is non-alnum flag |
+| If not alphanumeric then no change | un_ord: ordinal username |
+| Key is translated into 2 sub-rotors to produc up to n^2 unique offsets | pw[i%pw_l]; pw[adv%pw_l] |
+| Key rotor #1 stepped by increment to promote domino effect | pw[i%pw_l]: key rotor stepped by increment |
+| Key Rotor #2 is used as a rotor stepped by prev adv to be affected by other var | pw[adv%pw_l]: key rotor stepped by prev advance |
+| Index causes an advance to promote change with each character | i: index of input string character |
+| Index of the matched pair from the mirror reflector to promote domino effect | pair_i: index of matched character pair |
+| Previous advance is also used so that all previous variable have aftereffects | adv: prior advance value before reassignment |
+| Advances the Caesar rotor by the offset, modulo is used to emulate rotation | ...+adv)%62: 62 alnum vals; 1-to-1 & onto func |
+| Sends the input through the Caesar rotor | un_ord-ani+adv: un_ord+ani is an alnum index |
+| Uses a mirror reflector to make it involutory | (185-un_ord...)%62: unordered tuples{(0,61),(1,60)...} |
+| Gets the a unique value for the unordered tuple for advance offset | abs(un_ord+un_ord-61): pair_i as above; for involution |
+| Sends the input through the Caesar rotor in the reverse direction | ...-adv)%62: 62 alnum vals; 1-to-1 & onto func |
+| Encodes the character as ASCII | un_ord: ordinal username |
+| Adds to string | out += chr(un_ord); converts int to chr |
 | Returns string |  |
 
 *Fig 5.* Series rotor representation
@@ -168,8 +176,7 @@ It may also be ideal to delete or overwrite the contents of old files. The initi
          \_Y_//      
 ```
 
-A single advancing rotor does almost the same thing as multiple rotors individually stepped with shift cipher and relatively cheap. Instead of 5 separate rotors, there is a separate rotor that counts steps, which also rotates with a modulo function. The path is the same from input->output as it is from output->input. The advance changes the effective center point of the reflector relative to the input side of the rotor.
-Secondary key rotors are like simplified 90's DRM codewheels. Rotor behavior electromechanically like brushes plus a rotor.
+A single advancing rotor does almost the same thing as multiple rotors individually stepped with shift cipher and relatively cheap. Primarily relies on int addition, modulo and string/array indexing. Instead of 5 separate rotors, there is a separate rotor that counts steps, which also rotates with a modulo function. The path is the same from input->output as it is from output->input. The advance changes the effective center point of the reflector relative to the input side of the rotor. Secondary key rotors are like simplified 90's DRM codewheels. Rotor behavior electromechanically like brushes plus a rotor.
     
     "Veni, vidi, vexi"
         -Some guy abusing Latin
@@ -178,7 +185,7 @@ Secondary key rotors are like simplified 90's DRM codewheels. Rotor behavior ele
 
 - "Caesar cipher" by Caesar, G. J. (~80BC)
 - "Enigma machine" by Scherbius, A. (1918 not-BC)
-- "Dial-A-Pirate" by Gilbert, R. (1990)
+- "Dial-A-Pirate" by Lucasfilm Games (1990)
 
 ### Appendix/Glossary:
 
@@ -191,14 +198,8 @@ A substitution cipher that offsets the character by 3, althouh tt is often used 
 
 #### Enigma machine
 
-An rotor based electromechanical encryption device used in WWII. A reflector made the machine involutory.
-Advancing rotors made it notoriously difficult to crack. The 'bombe,' based on the prior art the Polish 'bomba,' 
-was designed by Alan Turing as an electromechanical computer to crack enigma encryption.
+An rotor based electromechanical encryption device used in WWII. A reflector made the machine involutory. Advancing rotors made it notoriously difficult to crack. The 'bombe,' based on the prior art the Polish 'bomba,' was designed by Alan Turing as an electromechanical computer to crack enigma encryption.
 
 #### Dial-a-Pirate
 
-A cardboard cipher disk for the 1990 Lucasfilms game "The Secret of Monkey Island" by Ron Gilbert.
-The cipher disk utilized faces of pirates that were split into upper and lower halves as the key. 
-The user would have to match a face combination given by the computer program and give a year based on a location on the cipher disk.
-This was an early form of DRM and ensured the secret of Monkey Island™ would only be revealed to legitimate users with a cipher disk,
-and prevented it from being pirated by dreadful guys.
+A cardboard cipher disk for the 1990 Lucasfilms game "The Secret of Monkey Island." Not the first of its kind, but was many guys' first brush with anti-piracy digital rights management. It was meant to help stop pirates attempting to discover the secret of Monkey Island™. The cipher disk utilized faces of pirates that were split into upper and lower halves as the key. The user would have to match a face combination given by the computer program and give a year based on a location on the cipher disk. Prior art was often just referencing passwords in a manual.
